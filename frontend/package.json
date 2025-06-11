@@ -1,0 +1,38 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "start": "node dist/index.html",
+    "dev": "vite",
+    "build": "vite build",
+    "test": "vitest",
+    "preview": "vite preview",
+    "asset": "node scripts/asset-export-generator.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@tanstack/react-query": "^5.79.0",
+    "@tanstack/react-router": "^1.120.13",
+    "@tanstack/react-router-devtools": "^1.120.13",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "zustand": "^5.0.5"
+  },
+  "devDependencies": {
+    "@tanstack/router-plugin": "^1.120.13",
+    "@types/node": "^22.15.29",
+    "@types/react": "19.1.6",
+    "@types/react-dom": "19.1.5",
+    "@vitejs/plugin-react": "^4.5.0",
+    "eslint": "^9.28.0",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.3",
+    "vite": "^6.3.5",
+    "vitest": "^3.1.4"
+  }
+}
