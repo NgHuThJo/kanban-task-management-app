@@ -6,10 +6,11 @@
   "main": "index.js",
   "scripts": {
     "start": "node dist/index.html",
-    "dev": "vite",
+    "dev": "npm run css-types -- --watch & vite",
     "build": "vite build",
     "test": "vitest",
     "preview": "vite preview",
+    "css-types": "tcm -p src/**/*.module.css",
     "asset": "node scripts/asset-export-generator.js"
   },
   "keywords": [],
@@ -31,6 +32,7 @@
     "@vitejs/plugin-react": "^4.5.0",
     "eslint": "^9.28.0",
     "prettier": "^3.5.3",
+    "typed-css-modules": "^0.9.1",
     "typescript": "^5.8.3",
     "vite": "^6.3.5",
     "vitest": "^3.1.4"

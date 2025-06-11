@@ -1,8 +1,15 @@
 import type { ComponentPropsWithoutRef } from "react";
+import styles from "./button.module.css";
 
-export function Button({
-  children,
-  ...props
-}: ComponentPropsWithoutRef<"button">) {
-  return <button {...props}>{children}</button>;
+type ValidClassName = keyof typeof styles;
+type ButtonProps = Omit<ComponentPropsWithoutRef<"button">, "className"> & {
+  className?: ValidClassName;
+};
+
+export function Button({ children, className, ...props }: ButtonProps) {
+  return (
+    <button className={className ? styles[className] : undefined} {...props}>
+      {children}
+    </button>
+  );
 }
