@@ -14,15 +14,19 @@
   --c-magenta-900: #f0f;
   --c-raspberry-900: #ff007f; */
   --black: #000112;
-  --very-dark-grey-dark-bg: #20212c;
+  --very-dark-grey: #20212c;
   --dark-grey: #2b2c37;
   --lines-dark: #3e3f4e;
   --medium-grey: #828fa3;
   --lines-light: #e4ebfa;
-  --light-grey-light-bg: #f4f7fd;
+  --light-grey: #f4f7fd;
   --white: #fff;
   --main-purple: #635fc7;
   --main-purple-hover: rgb(168, 164, 255);
   --red: #ea5555;
-  --red-hover: #ff9898;
+  --light-red: #ff9898;
+
+  --bgc-button-add-task: var(--main-purple);
+  --bgc-button-active-board: var(--main-purple);
+  --bgc-button-theme-toggle: var(--main-purple);
 }

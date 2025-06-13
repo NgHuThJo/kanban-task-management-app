@@ -1,5 +1,6 @@
 using backend.Models;
 using FluentValidation;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using static backend.Shared.Globals;
@@ -45,7 +46,7 @@ public class CreateSubtaskRequestValidator
 
 public static class CreateKanbanTasksEndpoint
 {
-    public static async Task<IResult> Create(
+    public static async Task<Results<ValidationProblem, Created>> Create(
         [FromServices] CreateKanbanTaskHandler handler,
         [FromServices] IValidator<CreateKanbanTaskRequest> validator,
         [FromBody] CreateKanbanTaskRequest command

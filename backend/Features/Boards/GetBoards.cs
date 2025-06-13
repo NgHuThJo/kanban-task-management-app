@@ -1,17 +1,19 @@
 using backend.Models;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace backend.Features.Boards;
 
-public record GetBoardsDto
+public record GetBoardsResponse
 {
     public required int Id { get; init; }
     public required string Name { get; init; }
-    public ICollection<GetBoardColumnsDto> BoardColumns { get; init; } = [];
+    public ICollection<GetBoardColumnsResponse> BoardColumns { get; init; } =
+        [];
 }
 
-public record GetBoardColumnsDto
+public record GetBoardColumnsResponse
 {
     public required int Id { get; init; }
     public required string Name { get; init; }
@@ -19,7 +21,7 @@ public record GetBoardColumnsDto
 
 public static class GetBoardsEndpoint
 {
-    public static async Task<IResult> GetAll(
+    public static async Task<Ok<List<GetBoardsResponse>>> GetAll(
         [FromServices] GetBoardsHandler handler
     )
     {
@@ -33,15 +35,15 @@ public class GetBoardsHandler(AppDbContext context)
 {
     private readonly AppDbContext _context = context;
 
-    public async Task<List<GetBoardsDto>> Handle()
+    public async Task<List<GetBoardsResponse>> Handle()
     {
         var boards = await _context
-            .Boards.Select(b => new GetBoardsDto
+            .Boards.Select(b => new GetBoardsResponse
             {
                 Id = b.Id,
                 Name = b.Name,
                 BoardColumns = b
-                    .BoardColumns.Select(bc => new GetBoardColumnsDto
+                    .BoardColumns.Select(bc => new GetBoardColumnsResponse
                     {
                         Id = bc.Id,
                         Name = bc.Name,

@@ -11,14 +11,14 @@ public record GetKanbanTasksRequest
     public int BoardColumnId { get; set; }
 }
 
-public record GetKanbanTasksDto
+public record GetKanbanTasksResponse
 {
     public required int Id { get; init; }
     public required string Title { get; init; }
     public required string Description { get; init; }
 }
 
-public record GetSubtasksDto
+public record GetSubtasksResponse
 {
     public required string Description { get; init; }
     public required bool IsCompleted { get; init; }
@@ -36,7 +36,7 @@ public class GetKanbanTasksRequestValidator
 public static class GetKanbanTasksEndpoint
 {
     public static async Task<
-        Results<ValidationProblem, Ok<List<GetKanbanTasksDto>>>
+        Results<ValidationProblem, Ok<List<GetKanbanTasksResponse>>>
     > GetAll(
         [FromServices] GetKanbanTasksHandler handler,
         [FromServices] IValidator<GetKanbanTasksRequest> validator,
@@ -62,13 +62,13 @@ public class GetKanbanTasksHandler(AppDbContext context)
 {
     private readonly AppDbContext _context = context;
 
-    public async Task<List<GetKanbanTasksDto>> Handle(
+    public async Task<List<GetKanbanTasksResponse>> Handle(
         GetKanbanTasksRequest query
     )
     {
         var kanbanTasks = await _context
             .KanbanTasks.Where(t => t.BoardColumnId == query.BoardColumnId)
-            .Select(t => new GetKanbanTasksDto
+            .Select(t => new GetKanbanTasksResponse
             {
                 Id = t.Id,
                 Title = t.Title,
