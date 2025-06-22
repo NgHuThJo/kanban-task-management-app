@@ -1,19 +1,26 @@
+using System.ComponentModel.DataAnnotations;
 using backend.Models;
 using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static backend.Shared.GlobalConstants;
 
 namespace backend.Features.KanbanTasks;
 
 public record GetKanbanTasksRequest
 {
+    [Range(1, int.MaxValue)]
     public int BoardColumnId { get; set; }
 }
 
 public record GetKanbanTasksResponse
 {
+    [Range(1, int.MaxValue)]
     public required int Id { get; init; }
+
+    [StringLength(TITLE_MAX_LENGTH, MinimumLength = 1)]
+    [RegularExpression(@"\S+")]
     public required string Title { get; init; }
     public required string Description { get; init; }
 }

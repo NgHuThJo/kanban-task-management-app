@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using System.Data;
 using backend.Models;
 using backend.Shared;
@@ -11,6 +12,8 @@ namespace backend.Features.Boards;
 
 public record CreateBoardRequest
 {
+    [StringLength(TITLE_MAX_LENGTH, MinimumLength = 1)]
+    [RegularExpression(@"\S+")]
     public required string Name { get; init; }
     public ICollection<CreateBoardColumnRequest> BoardColumns { get; init; } =
         [];
@@ -18,6 +21,8 @@ public record CreateBoardRequest
 
 public record CreateBoardColumnRequest
 {
+    [StringLength(TITLE_MAX_LENGTH, MinimumLength = 1)]
+    [RegularExpression(@"\S+")]
     public required string Name { get; init; }
 }
 

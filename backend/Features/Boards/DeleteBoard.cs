@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using backend.Models;
 using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -8,6 +9,7 @@ namespace backend.Features.Boards;
 
 public record DeleteBoardRequest
 {
+    [Range(1, int.MaxValue)]
     public int Id { get; init; }
 }
 

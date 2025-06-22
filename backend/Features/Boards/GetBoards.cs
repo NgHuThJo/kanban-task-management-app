@@ -1,13 +1,19 @@
+using System.ComponentModel.DataAnnotations;
 using backend.Models;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using static backend.Shared.GlobalConstants;
 
 namespace backend.Features.Boards;
 
 public record GetBoardsResponse
 {
+    [Range(1, int.MaxValue)]
     public required int Id { get; init; }
+
+    [StringLength(TITLE_MAX_LENGTH, MinimumLength = 1)]
+    [RegularExpression(@"\S+")]
     public required string Name { get; init; }
     public ICollection<GetBoardColumnsResponse> BoardColumns { get; init; } =
         [];
@@ -15,7 +21,11 @@ public record GetBoardsResponse
 
 public record GetBoardColumnsResponse
 {
+    [Range(1, int.MaxValue)]
     public required int Id { get; init; }
+
+    [StringLength(TITLE_MAX_LENGTH, MinimumLength = 1)]
+    [RegularExpression(@"\S+")]
     public required string Name { get; init; }
 }
 

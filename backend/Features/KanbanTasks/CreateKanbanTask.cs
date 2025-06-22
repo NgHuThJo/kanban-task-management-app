@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using backend.Models;
 using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -9,16 +10,21 @@ namespace backend.Features.KanbanTasks;
 
 public record CreateKanbanTaskRequest
 {
+    [StringLength(TITLE_MAX_LENGTH, MinimumLength = 1)]
+    [RegularExpression(@"\S+")]
     public required string Title { get; init; }
 
     public required string Description { get; init; }
 
+    [Range(1, int.MaxValue)]
     public int BoardColumnId { get; init; }
     public ICollection<CreateSubtaskRequest> Subtasks { get; init; } = [];
 }
 
 public record CreateSubtaskRequest
 {
+    [StringLength(TITLE_MAX_LENGTH, MinimumLength = 1)]
+    [RegularExpression(@"\S+")]
     public required string Description { get; init; }
 }
 

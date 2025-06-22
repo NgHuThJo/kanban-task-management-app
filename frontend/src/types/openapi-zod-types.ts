@@ -60,80 +60,93 @@ export type {
 };
 
 const CreateBoardColumnRequest: z.ZodType<CreateBoardColumnRequest> = z
-  .object({ name: z.string() })
+  .object({ name: z.string().min(1).max(40).regex(/\S+/) })
   .strict()
   .passthrough();
 const CreateBoardRequest: z.ZodType<CreateBoardRequest> = z
   .object({
-    name: z.string(),
+    name: z.string().min(1).max(40).regex(/\S+/),
     boardColumns: z.array(CreateBoardColumnRequest).optional(),
   })
   .strict()
   .passthrough();
 const GetBoardColumnsResponse: z.ZodType<GetBoardColumnsResponse> = z
-  .object({ id: z.number().int(), name: z.string() })
+  .object({
+    id: z.number().int().gte(1).lte(2147483647),
+    name: z.string().min(1).max(40).regex(/\S+/),
+  })
   .strict()
   .passthrough();
 const GetBoardsResponse: z.ZodType<GetBoardsResponse> = z
   .object({
-    id: z.number().int(),
-    name: z.string(),
+    id: z.number().int().gte(1).lte(2147483647),
+    name: z.string().min(1).max(40).regex(/\S+/),
     boardColumns: z.array(GetBoardColumnsResponse).optional(),
   })
   .strict()
   .passthrough();
 const UpdateBoardColumnRequest: z.ZodType<UpdateBoardColumnRequest> = z
-  .object({ id: z.number().int().optional(), name: z.string() })
+  .object({
+    id: z.number().int().gte(1).lte(2147483647).optional(),
+    name: z.string().min(1).max(40).regex(/\S+/),
+  })
   .strict()
   .passthrough();
 const UpdateBoardRequest: z.ZodType<UpdateBoardRequest> = z
   .object({
-    id: z.number().int().optional(),
-    name: z.string(),
+    id: z.number().int().gte(1).lte(2147483647).optional(),
+    name: z.string().min(1).max(40).regex(/\S+/),
     boardColumns: z.array(UpdateBoardColumnRequest).optional(),
   })
   .strict()
   .passthrough();
 const DeleteBoardRequest = z
-  .object({ id: z.number().int() })
+  .object({ id: z.number().int().gte(1).lte(2147483647) })
   .strict()
   .passthrough();
 const CreateSubtaskRequest: z.ZodType<CreateSubtaskRequest> = z
-  .object({ description: z.string() })
+  .object({ description: z.string().min(1).max(40).regex(/\S+/) })
   .strict()
   .passthrough();
 const CreateKanbanTaskRequest: z.ZodType<CreateKanbanTaskRequest> = z
   .object({
-    title: z.string(),
+    title: z.string().min(1).max(40).regex(/\S+/),
     description: z.string(),
-    boardColumnId: z.number().int().optional(),
+    boardColumnId: z.number().int().gte(1).lte(2147483647).optional(),
     subtasks: z.array(CreateSubtaskRequest).optional(),
   })
   .strict()
   .passthrough();
 const GetKanbanTasksRequest = z
-  .object({ boardColumnId: z.number().int() })
+  .object({ boardColumnId: z.number().int().gte(1).lte(2147483647) })
   .strict()
   .passthrough();
 const GetKanbanTasksResponse = z
-  .object({ id: z.number().int(), title: z.string(), description: z.string() })
+  .object({
+    id: z.number().int().gte(1).lte(2147483647),
+    title: z.string().min(1).max(40).regex(/\S+/),
+    description: z.string(),
+  })
   .strict()
   .passthrough();
 const UpdateSubtaskRequest: z.ZodType<UpdateSubtaskRequest> = z
-  .object({ id: z.number().int().optional(), description: z.string() })
+  .object({
+    id: z.number().int().gte(1).lte(2147483647).optional(),
+    description: z.string().min(1).max(40).regex(/\S+/),
+  })
   .strict()
   .passthrough();
 const UpdateKanbanTaskRequest: z.ZodType<UpdateKanbanTaskRequest> = z
   .object({
-    id: z.number().int().optional(),
-    title: z.string(),
+    id: z.number().int().gte(1).lte(2147483647).optional(),
+    title: z.string().min(1).max(40).regex(/\S+/),
     description: z.string(),
     subtasks: z.array(UpdateSubtaskRequest).optional(),
   })
   .strict()
   .passthrough();
 const DeleteKanbanTaskRequest = z
-  .object({ id: z.number().int() })
+  .object({ id: z.number().int().gte(1).lte(2147483647) })
   .strict()
   .passthrough();
 const HttpValidationProblemDetails = z
@@ -225,7 +238,10 @@ const endpoints = makeApi([
       {
         name: "body",
         type: "Body",
-        schema: z.object({ id: z.number().int() }).strict().passthrough(),
+        schema: z
+          .object({ id: z.number().int().gte(1).lte(2147483647) })
+          .strict()
+          .passthrough(),
       },
     ],
     response: z.void(),
@@ -268,7 +284,7 @@ const endpoints = makeApi([
         name: "body",
         type: "Body",
         schema: z
-          .object({ boardColumnId: z.number().int() })
+          .object({ boardColumnId: z.number().int().gte(1).lte(2147483647) })
           .strict()
           .passthrough(),
       },
@@ -312,7 +328,10 @@ const endpoints = makeApi([
       {
         name: "body",
         type: "Body",
-        schema: z.object({ id: z.number().int() }).strict().passthrough(),
+        schema: z
+          .object({ id: z.number().int().gte(1).lte(2147483647) })
+          .strict()
+          .passthrough(),
       },
     ],
     response: z.void(),

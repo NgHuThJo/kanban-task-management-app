@@ -11,7 +11,7 @@
     "test": "vitest",
     "preview": "vite preview",
     "typed-css-types": "tcm -p src/**/*.module.css -w",
-    "openapi-zod-client-types": "openapi-zod-client http://localhost:5096/openapi/v1.json -t default.hbs -o ./src/types/openapi-zod-client.ts --export-schemas --export-types --strict-objects --implicit-required"
+    "openapi-zod-client-types": "openapi-zod-client http://localhost:5096/openapi/v1.json -t default.hbs -o ./src/types/openapi-zod-types.ts --export-schemas --export-types --strict-objects --implicit-required"
   },
   "keywords": [],
   "author": "",
