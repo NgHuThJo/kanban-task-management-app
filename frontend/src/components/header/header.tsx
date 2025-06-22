@@ -1,16 +1,18 @@
-import { useSuspenseQuery } from "@tanstack/react-query";
 import { Button } from "#frontend/components/button/button";
-import { getBoardsQueryOptions } from "#frontend/react-query/board";
+import { VerticalEllipsis } from "#frontend/components/icon/icon";
 
-export function Header() {
-  const { data } = useSuspenseQuery(getBoardsQueryOptions());
+type HeaderProps = {
+  currentBoardName: string;
+};
 
-  console.log(data);
-
+export function Header({ currentBoardName }: HeaderProps) {
   return (
     <header>
-      <h1>{data.name}</h1>
+      <h1>{currentBoardName}</h1>
       <Button className="add-task">+ Add New Task</Button>
+      <Button>
+        <VerticalEllipsis />
+      </Button>
     </header>
   );
 }

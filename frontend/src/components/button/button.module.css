@@ -5,3 +5,7 @@
 .add-task {
   background-color: var(--bgc-button-add-task);
 }
+
+.icon {
+  width: 1rem;
+}

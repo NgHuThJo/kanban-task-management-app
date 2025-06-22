@@ -48,13 +48,9 @@
               "target": "Package",
               "version": "[12.0.0, )"
             },
-            "NSwag.AspNetCore": {
+            "Microsoft.AspNetCore.OpenApi": {
               "target": "Package",
-              "version": "[14.4.0, )"
-            },
-            "NSwag.CodeGeneration.TypeScript": {
-              "target": "Package",
-              "version": "[14.4.0, )"
+              "version": "[9.0.6, )"
             },
             "Npgsql.EntityFrameworkCore.PostgreSQL": {
               "target": "Package",

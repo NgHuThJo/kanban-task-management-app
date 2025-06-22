@@ -1,9 +1,8 @@
 using backend.Features;
 using backend.Models;
+using backend.Shared;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using NSwag;
-using NSwag.CodeGeneration.TypeScript;
 using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -20,9 +19,18 @@ foreach (var handlerType in handlerTypes)
     builder.Services.AddScoped(handlerType);
 }
 
+builder.Services.AddProblemDetails(options =>
+{
+    options.CustomizeProblemDetails = context =>
+    {
+        context.ProblemDetails.Instance =
+            $"{context.HttpContext.Request.Method} {context.HttpContext.Request.Path}";
+    };
+});
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 builder.Services.AddValidatorsFromAssembly(assembly);
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddOpenApiDocument();
+builder.Services.AddOpenApi();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(
         builder.Configuration.GetConnectionString("PostgresConnection")
@@ -44,44 +52,17 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseOpenApi(options =>
-    {
-        options.Path = "/openapi/v1.json";
-    });
+    app.MapOpenApi();
     app.UseCors("DevCorsPolicy");
     app.MapScalarApiReference();
-
-    app.MapGet(
-        "/generate-client",
-        async () =>
-        {
-            var document = await OpenApiDocument.FromUrlAsync(
-                "http://localhost:5096/openapi/v1.json"
-            );
-
-            var settings = new TypeScriptClientGeneratorSettings
-            {
-                ClassName = "ApiClient",
-                Template = TypeScriptTemplate.Fetch,
-            };
-
-            var generator = new TypeScriptClientGenerator(document, settings);
-            var code = generator.GenerateFile();
-
-            await File.WriteAllTextAsync(
-                "../frontend/src/client/generated-client.ts",
-                code
-            );
-
-            return Results.Ok("Client generated successfully");
-        }
-    );
 }
 else
 {
     app.UseHttpsRedirection();
 }
 
+app.UseExceptionHandler();
+app.UseStatusCodePages();
 app.MapBoardApi().MapKanbanTaskApi();
 
 app.Run();

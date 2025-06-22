@@ -1,13 +1,11 @@
 import { queryOptions } from "@tanstack/react-query";
+import { client } from "#frontend/types";
 
 export const getBoardsQueryOptions = () =>
   queryOptions({
     queryKey: ["boards"],
     queryFn: async ({ signal }) => {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/boards`, {
-        signal,
-      });
-      return res.json();
+      return await client.getApiBoards(signal);
     },
     retry: false,
     retryDelay: (attempt) => 500 * attempt,

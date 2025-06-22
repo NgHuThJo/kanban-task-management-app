@@ -1,8 +1,11 @@
+using System.Data;
 using backend.Models;
+using backend.Shared;
 using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using static backend.Shared.Globals;
+using Microsoft.EntityFrameworkCore;
+using static backend.Shared.GlobalConstants;
 
 namespace backend.Features.Boards;
 
@@ -39,12 +42,17 @@ public class CreateBoardColumnRequestValidator
 
 public static class CreateBoardEndpoint
 {
-    public static async Task<Results<ValidationProblem, Created>> Create(
+    public static async Task<
+        Results<ValidationProblem, Created, ProblemHttpResult>
+    > Create(
+        HttpContext httpContext,
         [FromServices] CreateBoardHandler handler,
         [FromServices] IValidator<CreateBoardRequest> validator,
         [FromBody] CreateBoardRequest command
     )
     {
+        Console.WriteLine(httpContext);
+
         var validationResult = await validator.ValidateAsync(command);
 
         if (!validationResult.IsValid)
@@ -54,7 +62,18 @@ public static class CreateBoardEndpoint
             );
         }
 
-        await handler.Handle(command);
+        try
+        {
+            await handler.Handle(command);
+        }
+        catch (DuplicateNameException ex)
+        {
+            return TypedResultsProblemDetails.Conflict(
+                httpContext: httpContext,
+                detail: ex.Message,
+                type: ex.GetType().Name
+            );
+        }
 
         return TypedResults.Created();
     }
@@ -66,6 +85,17 @@ public class CreateBoardHandler(AppDbContext context)
 
     public async Task Handle(CreateBoardRequest command)
     {
+        var nameInDb = await _context
+            .Boards.Where(b => b.Name == command.Name)
+            .FirstOrDefaultAsync();
+
+        if (nameInDb is not null)
+        {
+            throw new DuplicateNameException(
+                $"Board name \"{command.Name}\" is already in database"
+            );
+        }
+
         var board = new Board
         {
             Name = command.Name,

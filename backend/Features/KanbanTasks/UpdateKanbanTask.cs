@@ -3,7 +3,7 @@ using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using static backend.Shared.Globals;
+using static backend.Shared.GlobalConstants;
 
 namespace backend.Features.KanbanTasks;
 

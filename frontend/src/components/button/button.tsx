@@ -6,9 +6,18 @@ type ButtonProps = Omit<ComponentPropsWithoutRef<"button">, "className"> & {
   className?: ValidClassName;
 };
 
-export function Button({ children, className, ...props }: ButtonProps) {
+export function Button({
+  children,
+  className,
+  type = "button",
+  ...props
+}: ButtonProps) {
   return (
-    <button className={className ? styles[className] : undefined} {...props}>
+    <button
+      className={className ? styles[className] : undefined}
+      type={type}
+      {...props}
+    >
       {children}
     </button>
   );
