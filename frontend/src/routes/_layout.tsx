@@ -5,11 +5,11 @@ import { CreateBoardDialog } from "#frontend/components/dialog/create-board";
 import { Header } from "#frontend/components/header/header";
 import { Sidebar } from "#frontend/components/sidebar/sidebar";
 import { Button } from "#frontend/components/button/button";
-import { getBoardsQueryOptions } from "#frontend/react-query/board";
+import { getApiBoardsOptions } from "#frontend/types/@tanstack/react-query.gen";
 
 export const Route = createFileRoute("/_layout")({
   loader: ({ context: { queryClient } }) => {
-    return queryClient.ensureQueryData(getBoardsQueryOptions());
+    return queryClient.ensureQueryData(getApiBoardsOptions());
   },
   component: RootLayout,
 });

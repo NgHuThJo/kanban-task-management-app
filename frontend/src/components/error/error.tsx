@@ -1,11 +1,7 @@
 type ErrorMessageProps = {
-  error: unknown;
+  error: string;
 };
 
 export function ErrorMessage({ error }: ErrorMessageProps) {
-  if (error instanceof Error) {
-    return <p>{error.message}</p>;
-  }
-
-  return null;
+  return <p>{error}</p>;
 }
