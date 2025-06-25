@@ -117,7 +117,7 @@ export function CreateBoardDialog({ ref, closeDialog }: DialogProps) {
           id="board-name"
           placeholder="e.g Web Design"
         />
-        {validationErrors?.name[0] && (
+        {validationErrors?.name?.[0] && (
           <ErrorMessage error={validationErrors.name[0]} />
         )}
         <fieldset>
