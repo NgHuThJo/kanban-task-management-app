@@ -1,0 +1,15 @@
+.layout {
+  display: grid;
+  gap: 2rem;
+  place-content: center;
+
+  & > * {
+    place-self: center;
+  }
+}
+
+.main-text {
+  text-align: center;
+  font-weight: var(--fw-heading);
+  font-size: var(--fs-h3);
+}

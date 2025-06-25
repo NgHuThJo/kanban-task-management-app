@@ -1,0 +1,32 @@
+.dialog {
+  min-width: 0;
+  padding: 2rem;
+}
+
+.form {
+  display: grid;
+  gap: 1rem;
+
+  h1 {
+    font-size: var(--fs-h2);
+  }
+
+  label,
+  legend {
+    font-weight: var(--fw-label);
+    color: var(--c-label-dialog);
+  }
+
+  fieldset {
+    display: grid;
+    gap: 0.5rem;
+    padding: 1rem;
+
+    div {
+      display: grid;
+      gap: 0.5rem;
+      grid-template-columns: 1fr min-content;
+      align-items: center;
+    }
+  }
+}

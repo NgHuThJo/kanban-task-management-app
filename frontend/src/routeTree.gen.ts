@@ -11,86 +11,79 @@
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
-import { Route as LayoutImport } from './routes/_layout'
-import { Route as LayoutIndexImport } from './routes/_layout/index'
+import { Route as LandingImport } from './routes/landing'
+import { Route as IndexImport } from './routes/index'
 
 // Create/Update Routes
 
-const LayoutRoute = LayoutImport.update({
-  id: '/_layout',
+const LandingRoute = LandingImport.update({
+  id: '/landing',
+  path: '/landing',
   getParentRoute: () => rootRoute,
 } as any)
 
-const LayoutIndexRoute = LayoutIndexImport.update({
+const IndexRoute = IndexImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => LayoutRoute,
+  getParentRoute: () => rootRoute,
 } as any)
 
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_layout': {
-      id: '/_layout'
-      path: ''
-      fullPath: ''
-      preLoaderRoute: typeof LayoutImport
-      parentRoute: typeof rootRoute
-    }
-    '/_layout/': {
-      id: '/_layout/'
+    '/': {
+      id: '/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof LayoutIndexImport
-      parentRoute: typeof LayoutImport
+      preLoaderRoute: typeof IndexImport
+      parentRoute: typeof rootRoute
+    }
+    '/landing': {
+      id: '/landing'
+      path: '/landing'
+      fullPath: '/landing'
+      preLoaderRoute: typeof LandingImport
+      parentRoute: typeof rootRoute
     }
   }
 }
 
 // Create and export the route tree
 
-interface LayoutRouteChildren {
-  LayoutIndexRoute: typeof LayoutIndexRoute
-}
-
-const LayoutRouteChildren: LayoutRouteChildren = {
-  LayoutIndexRoute: LayoutIndexRoute,
-}
-
-const LayoutRouteWithChildren =
-  LayoutRoute._addFileChildren(LayoutRouteChildren)
-
 export interface FileRoutesByFullPath {
-  '': typeof LayoutRouteWithChildren
-  '/': typeof LayoutIndexRoute
+  '/': typeof IndexRoute
+  '/landing': typeof LandingRoute
 }
 
 export interface FileRoutesByTo {
-  '/': typeof LayoutIndexRoute
+  '/': typeof IndexRoute
+  '/landing': typeof LandingRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/_layout': typeof LayoutRouteWithChildren
-  '/_layout/': typeof LayoutIndexRoute
+  '/': typeof IndexRoute
+  '/landing': typeof LandingRoute
 }
 
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '' | '/'
+  fullPaths: '/' | '/landing'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/_layout' | '/_layout/'
+  to: '/' | '/landing'
+  id: '__root__' | '/' | '/landing'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  LayoutRoute: typeof LayoutRouteWithChildren
+  IndexRoute: typeof IndexRoute
+  LandingRoute: typeof LandingRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  LayoutRoute: LayoutRouteWithChildren,
+  IndexRoute: IndexRoute,
+  LandingRoute: LandingRoute,
 }
 
 export const routeTree = rootRoute
@@ -103,18 +96,15 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/_layout"
+        "/",
+        "/landing"
       ]
     },
-    "/_layout": {
-      "filePath": "_layout.tsx",
-      "children": [
-        "/_layout/"
-      ]
+    "/": {
+      "filePath": "index.tsx"
     },
-    "/_layout/": {
-      "filePath": "_layout/index.tsx",
-      "parent": "/_layout"
+    "/landing": {
+      "filePath": "landing.tsx"
     }
   }
 }

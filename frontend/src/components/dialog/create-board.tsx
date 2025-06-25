@@ -3,9 +3,9 @@ import {
   type ChangeEvent,
   type ComponentPropsWithRef,
   type FormEvent,
+  type MouseEvent,
 } from "react";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { z } from "zod";
 import { Button } from "#frontend/components/button/button";
 import { ErrorMessage } from "#frontend/components/error/error";
 import { Cross } from "#frontend/components/icon/icon";
@@ -14,7 +14,6 @@ import { Input } from "#frontend/components/input/input";
 import { postApiBoardsMutation } from "#frontend/types/@tanstack/react-query.gen";
 import { zCreateBoardRequest } from "#frontend/types/zod.gen";
 import { formDataToObject } from "#frontend/utils/object";
-import type { inferFlattenedErrors } from "zod";
 import { makeZodErrorsUserFriendly } from "#frontend/utils/zod";
 import type { CreateBoardRequest } from "#frontend/types";
 
@@ -24,7 +23,7 @@ type Column = {
 };
 
 type DialogProps = ComponentPropsWithRef<"dialog"> & {
-  closeDialog: () => void;
+  closeDialog: (event: MouseEvent<HTMLDialogElement>) => void;
 };
 
 export function CreateBoardDialog({ ref, closeDialog }: DialogProps) {
@@ -34,7 +33,7 @@ export function CreateBoardDialog({ ref, closeDialog }: DialogProps) {
   const [columns, setColumns] = useState<Column[]>([]);
   const queryClient = useQueryClient();
 
-  const { isPending, error, mutate } = useMutation({
+  const { isPending, mutate } = useMutation({
     ...postApiBoardsMutation(),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["boards"] });
@@ -106,7 +105,7 @@ export function CreateBoardDialog({ ref, closeDialog }: DialogProps) {
   };
 
   return (
-    <dialog ref={ref}>
+    <dialog ref={ref} onClick={closeDialog}>
       <form method="put" onSubmit={handleCreateBoard}>
         <h1>Add new board</h1>
         <Label htmlFor="board-name">Board Name</Label>
