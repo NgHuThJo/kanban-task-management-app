@@ -148,10 +148,12 @@ export function CreateBoardDialog({ ref, closeDialog }: DialogProps) {
             </div>
           ))}
         </fieldset>
-        <Button type="button" onClick={handleAddColumn}>
+        <Button className="add-task" type="button" onClick={handleAddColumn}>
           + Add New Column
         </Button>
-        <Button type="submit">Create New Board</Button>
+        <Button className="add-task" type="submit">
+          Create New Board
+        </Button>
       </form>
     </dialog>
   );

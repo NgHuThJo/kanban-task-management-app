@@ -1,8 +1,14 @@
 .button-base {
-  --p-base: 2rem;
+  --p-base: 0.75rem;
+  --bd-rd-base: 2rem;
 }
 
 .add-task {
+  composes: button-base;
+
+  padding: var(--p-base);
+  border-radius: var(--bd-rd-base);
+  color: var(--c-button-add-task);
   background-color: var(--bgc-button-add-task);
 }
 

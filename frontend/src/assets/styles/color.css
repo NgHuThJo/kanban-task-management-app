@@ -27,6 +27,7 @@
   --light-red: #ff9898;
 
   --c-input-outline: var(--main-purple);
+  --c-button-add-task: var(--white);
   --bgc-button-add-task: var(--main-purple);
   --bgc-button-active-board: var(--main-purple);
   --bgc-button-theme-toggle: var(--main-purple);
