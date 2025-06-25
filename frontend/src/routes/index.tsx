@@ -30,7 +30,7 @@ function Main() {
   //   ? undefined
   //   : data.findLast((value) => value.id == currentBoardId);
 
-  if (!true) {
+  if (!false) {
     navigate({ to: "/landing" });
   } else {
     return (

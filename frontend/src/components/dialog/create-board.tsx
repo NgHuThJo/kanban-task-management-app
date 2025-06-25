@@ -16,6 +16,7 @@ import { zCreateBoardRequest } from "#frontend/types/zod.gen";
 import { formDataToObject } from "#frontend/utils/object";
 import { makeZodErrorsUserFriendly } from "#frontend/utils/zod";
 import type { CreateBoardRequest } from "#frontend/types";
+import styles from "./create-board.module.css";
 
 type Column = {
   id: string;
@@ -105,11 +106,12 @@ export function CreateBoardDialog({ ref, closeDialog }: DialogProps) {
   };
 
   return (
-    <dialog ref={ref} onClick={closeDialog}>
-      <form method="put" onSubmit={handleCreateBoard}>
+    <dialog className={styles.dialog} ref={ref} onClick={closeDialog}>
+      <form className={styles.form} method="put" onSubmit={handleCreateBoard}>
         <h1>Add new board</h1>
         <Label htmlFor="board-name">Board Name</Label>
         <Input
+          className="dialog"
           type="text"
           name="board-name"
           id="board-name"
@@ -121,8 +123,9 @@ export function CreateBoardDialog({ ref, closeDialog }: DialogProps) {
         <fieldset>
           <legend>Board Columns</legend>
           {columns.map(({ id, name }, index) => (
-            <li key={id}>
+            <div key={id}>
               <Input
+                className="dialog"
                 type="text"
                 name="board-column"
                 value={name}
@@ -130,10 +133,6 @@ export function CreateBoardDialog({ ref, closeDialog }: DialogProps) {
                   handleChangeColumnName(event, id);
                 }}
               />
-              {validationErrors?.boardColumns &&
-                validationErrors.boardColumns[index] && (
-                  <ErrorMessage error={validationErrors.boardColumns[index]} />
-                )}
               <Button
                 className="icon"
                 type="button"
@@ -143,7 +142,10 @@ export function CreateBoardDialog({ ref, closeDialog }: DialogProps) {
               >
                 <Cross />
               </Button>
-            </li>
+              {validationErrors?.boardColumns?.[index] && (
+                <ErrorMessage error={validationErrors.boardColumns[index]} />
+              )}
+            </div>
           ))}
         </fieldset>
         <Button type="button" onClick={handleAddColumn}>
