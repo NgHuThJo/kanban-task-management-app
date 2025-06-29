@@ -15,3 +15,7 @@
 .icon {
   width: 1rem;
 }
+
+.delete {
+  color: var(--c-button-delete);
+}

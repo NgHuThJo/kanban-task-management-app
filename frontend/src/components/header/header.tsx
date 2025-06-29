@@ -1,18 +1,53 @@
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { Button } from "#frontend/components/button/button";
-import { VerticalEllipsis } from "#frontend/components/icon/icon";
+import { getApiBoardsOptions } from "#frontend/types/@tanstack/react-query.gen";
+import {
+  ChevronDown,
+  ChevronUp,
+  LogoMobile,
+  VerticalEllipsis,
+} from "#frontend/components/icon/icon";
+import styles from "./header.module.css";
+import { useToggle } from "#frontend/hooks/use-toggle";
+import { EditOptionDialog } from "#frontend/components/dialog/edit-board";
+import { useMediaQuery } from "#frontend/hooks/use-media-query";
 
-type HeaderProps = {
-  currentBoardName: string;
-};
+export function Header() {
+  const { isOpen: isLeftDialogOpen, toggle: toggleLeftDialog } = useToggle();
+  const { isMatch: isMobile } = useMediaQuery("(max-width: 768px)");
+  const {
+    isOpen: isEditDialogOpen,
+    open: openEditDialog,
+    close: closeEditDialog,
+  } = useToggle();
+  const { data } = useSuspenseQuery(getApiBoardsOptions());
 
-export function Header({ currentBoardName }: HeaderProps) {
+  const lastElement = data.at(-1);
+
   return (
-    <header>
-      <h1>{currentBoardName}</h1>
-      <Button className="add-task">+ Add New Task</Button>
-      <Button>
-        <VerticalEllipsis />
-      </Button>
-    </header>
+    <>
+      <header className={styles.layout}>
+        {isMobile ? <LogoMobile className={styles.logo} /> : null}
+        <h1 className={styles.name}>{lastElement?.name ?? "No Board"}</h1>
+        {isMobile ? (
+          <button
+            className={styles.chevron}
+            type="button"
+            onClick={toggleLeftDialog}
+          >
+            {isLeftDialogOpen ? <ChevronUp /> : <ChevronDown />}
+          </button>
+        ) : null}
+        <Button className="add-task" type="button">
+          {isMobile ? "+" : "+ Add New Task"}
+        </Button>
+        <button className={styles.edit} type="button" onClick={openEditDialog}>
+          <VerticalEllipsis />
+        </button>
+        {isEditDialogOpen ? (
+          <EditOptionDialog closeDialog={closeEditDialog} />
+        ) : null}
+      </header>
+    </>
   );
 }

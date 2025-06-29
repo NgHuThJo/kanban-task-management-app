@@ -27,6 +27,7 @@
   --light-red: #ff9898;
 
   --c-input-outline: var(--main-purple);
+  --c-button-delete: var(--red);
   --c-button-add-task: var(--white);
   --bgc-button-add-task: var(--main-purple);
   --bgc-button-active-board: var(--main-purple);

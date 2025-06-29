@@ -11,7 +11,10 @@ import { ErrorMessage } from "#frontend/components/error/error";
 import { Cross } from "#frontend/components/icon/icon";
 import { Label } from "#frontend/components/label/label";
 import { Input } from "#frontend/components/input/input";
-import { postApiBoardsMutation } from "#frontend/types/@tanstack/react-query.gen";
+import {
+  getApiBoardsOptions,
+  postApiBoardsMutation,
+} from "#frontend/types/@tanstack/react-query.gen";
 import { zCreateBoardRequest } from "#frontend/types/zod.gen";
 import { formDataToObject } from "#frontend/utils/object";
 import { makeZodErrorsUserFriendly } from "#frontend/utils/zod";
@@ -36,8 +39,10 @@ export function CreateBoardDialog({ ref, closeDialog }: DialogProps) {
 
   const { isPending, mutate } = useMutation({
     ...postApiBoardsMutation(),
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["boards"] });
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: getApiBoardsOptions().queryKey,
+      });
     },
   });
 

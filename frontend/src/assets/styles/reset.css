@@ -43,6 +43,7 @@ button {
   transition: opacity var(--transition-duration);
 
   &:hover {
+    cursor: pointer;
     opacity: 0.5;
   }
 }

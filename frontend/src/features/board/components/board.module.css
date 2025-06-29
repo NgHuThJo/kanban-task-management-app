@@ -1,0 +1,21 @@
+.layout {
+  display: grid;
+  grid-template-rows: [header-start] auto [header-end content-start] 1fr [content-end];
+  grid-template-columns: [sidebar-start] auto [sidebar-end content-start] 1fr [content-end];
+
+  aside {
+    display: none;
+  }
+
+  header {
+    grid-column: content-start / content-end;
+  }
+
+  @media (width >= 768px) {
+    aside {
+      display: revert;
+      grid-row: header-start/ content-end;
+      grid-column: sidebar-start / sidebar-end;
+    }
+  }
+}
