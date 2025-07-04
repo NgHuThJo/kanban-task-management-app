@@ -6,6 +6,7 @@
   position: absolute;
   top: 100%;
   right: 1rem;
+  background-color: var(--c-bg-tertiary);
 
   & > button:first-of-type {
     justify-self: end;

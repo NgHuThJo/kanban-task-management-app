@@ -1,0 +1,24 @@
+.dialog-custom-props {
+  --_p-dialog: 2rem;
+}
+
+.post-dialog {
+  composes: dialog-custom-props;
+
+  padding: var(--_p-dialog);
+  margin: auto;
+  background-color: var(--c-bg-secondary);
+}
+
+.delete-dialog {
+  composes: dialog-custom-props;
+
+  max-width: 30rem;
+  padding: var(--_p-dialog);
+  margin: auto;
+  background-color: var(--c-bg-secondary);
+
+  > * + * {
+    margin-top: 1em;
+  }
+}

@@ -8,8 +8,8 @@
 
   padding: var(--p-base);
   border-radius: var(--bd-rd-base);
-  color: var(--c-button-add-task);
-  background-color: var(--bgc-button-add-task);
+  color: var(--c-secondary);
+  background-color: var(--c-primary);
 }
 
 .icon {
@@ -17,5 +17,5 @@
 }
 
 .delete {
-  color: var(--c-button-delete);
+  color: var(--c-error);
 }

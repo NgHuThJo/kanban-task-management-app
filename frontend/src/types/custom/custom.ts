@@ -1,1 +1,4 @@
-export type GetKeys<T> = keyof T;
+export type Column = {
+  id: string;
+  name: string;
+};

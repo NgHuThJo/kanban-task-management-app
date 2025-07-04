@@ -1,18 +1,6 @@
 :root {
-  /* ---white-900: #fff;
-  --c-black-900: #000;
-  --c-red-900: #f00;
-  --c-orange-900: #ff7f00;
-  --c-yellow-900: #ff0;
-  --c-spring-900-green: #7fff00;
-  --c-green-900: #0f0;
-  --c-turquoise-900: #00ff7f;
-  --c-cyan-900: #0ff;
-  --c-ocean-900: #007fff;
-  --c-blue-900: #00f;
-  --c-violet-900: #7f00ff;
-  --c-magenta-900: #f0f;
-  --c-raspberry-900: #ff007f; */
+  color-scheme: light dark;
+
   --black: #000112;
   --very-dark-grey: #20212c;
   --dark-grey: #2b2c37;
@@ -26,10 +14,47 @@
   --red: #ea5555;
   --light-red: #ff9898;
 
-  --c-input-outline: var(--main-purple);
-  --c-button-delete: var(--red);
-  --c-button-add-task: var(--white);
-  --bgc-button-add-task: var(--main-purple);
-  --bgc-button-active-board: var(--main-purple);
-  --bgc-button-theme-toggle: var(--main-purple);
+  --c-primary: var(--main-purple);
+  --c-secondary: var(--white);
+
+  --c-heading-light: var(--black);
+  --c-heading-dark: var(--white);
+  --c-heading: light-dark(var(--c-heading-light), var(--c-heading-dark));
+  --c-text: var(--medium-grey);
+  --c-error: var(--red);
+
+  --c-bg-error: var(--light-red);
+  --c-bg-secondary-light: var(--white);
+  --c-bg-secondary-dark: var(--dark-grey);
+  --c-bg-secondary: light-dark(
+    var(--c-bg-secondary-light),
+    var(--c-bg-secondary-dark)
+  );
+  --c-bg-primary-light: var(--light-grey);
+  --c-bg-primary-dark: var(--very-dark-grey);
+  --c-bg-primary: light-dark(
+    var(--c-bg-primary-light),
+    var(--c-bg-primary-dark)
+  );
+
+  --c-bg-tertiary-light: var(--white);
+  --c-bg-tertiary-dark: var(--black);
+  --c-bg-tertiary: light-dark(
+    var(--c-bg-tertiary-light),
+    var(--c-bg-tertiary-dark)
+  );
+}
+
+.light {
+  --c-heading: var(--c-heading-light);
+  --c-bg-secondary: var(--c-bg-secondary-light);
+  --c-bg-primary: var(--c-bg-primary-light);
+  --c-bg-tertiary: var(--c-bg-tertiary-light);
+}
+
+.dark {
+  --c-heading: var(--c-heading-dark);
+  --c-bg-secondary: var(--c-bg-secondary-dark);
+  --c-bg-primary: var(--c-bg-primary-dark);
+  --c-bg-tertiary: var(--c-bg-tertiary-dark);
 }

@@ -6,6 +6,7 @@ import { z } from "zod";
 import { routeTree } from "#frontend/routeTree.gen";
 import { CapitalizeFirstLetter } from "#frontend/utils/string";
 import "#frontend/assets/styles";
+import { ThemeStoreProvider } from "#frontend/store/theme";
 
 z.setErrorMap((iss, ctx) => {
   const formattedPath = iss.path.map((value) => {
@@ -64,7 +65,9 @@ if (!root) {
 ReactDOM.createRoot(root).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <RouterProvider router={router} />
+      <ThemeStoreProvider>
+        <RouterProvider router={router} />
+      </ThemeStoreProvider>
     </QueryClientProvider>
   </StrictMode>,
 );

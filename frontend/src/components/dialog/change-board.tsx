@@ -5,40 +5,38 @@ import {
   type FormEvent,
   type MouseEvent,
 } from "react";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { Button } from "#frontend/components/button/button";
+import { Dialog } from "#frontend/components/dialog/dialog";
 import { ErrorMessage } from "#frontend/components/error/error";
 import { Cross } from "#frontend/components/icon/icon";
-import { Label } from "#frontend/components/label/label";
 import { Input } from "#frontend/components/input/input";
-import { Dialog } from "#frontend/components/dialog/dialog";
+import { Label } from "#frontend/components/label/label";
 import {
   getApiBoardsOptions,
-  postApiBoardsMutation,
-} from "#frontend/types/generated/@tanstack/react-query.gen";
-import { zCreateBoardRequest } from "#frontend/types/generated/zod.gen";
+  putApiBoardsMutation,
+} from "#frontend/types/@tanstack/react-query.gen";
+import { zUpdateBoardRequest } from "#frontend/types/zod.gen";
 import { formDataToObject } from "#frontend/utils/object";
+import type { CreateBoardRequest } from "#frontend/types";
 import { makeZodErrorsUserFriendly } from "#frontend/utils/zod";
-import type { CreateBoardRequest } from "#frontend/types/generated";
 import type { Column } from "#frontend/types/custom/custom";
-import styles from "./create-board.module.css";
-import { useBoardStore } from "#frontend/store/board";
+import styles from "./change-board.module.css";
 
-type DialogProps = ComponentPropsWithRef<"dialog"> & {
+type ChangeBoardProps = ComponentPropsWithRef<"dialog"> & {
   closeDialog: (event: MouseEvent<HTMLDialogElement>) => void;
 };
 
-export function CreateBoardDialog({ ref, closeDialog }: DialogProps) {
+export function ChangeBoard({ closeDialog, ref }: ChangeBoardProps) {
   const [validationErrors, setValidationErrors] = useState<ReturnType<
     typeof makeZodErrorsUserFriendly<CreateBoardRequest>
   > | null>(null);
   const [columns, setColumns] = useState<Column[]>([]);
   const queryClient = useQueryClient();
-  const setCurrentBoardId = useBoardStore((state) => state.setCurrentBoardId);
 
   const { isPending, mutate } = useMutation({
-    ...postApiBoardsMutation(),
-    onSuccess: async (data) => {
+    ...putApiBoardsMutation(),
+    onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: getApiBoardsOptions().queryKey,
       });
@@ -77,7 +75,7 @@ export function CreateBoardDialog({ ref, closeDialog }: DialogProps) {
     );
   };
 
-  const handleCreateBoard = (event: FormEvent<HTMLFormElement>) => {
+  const handleEditBoard = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
 
     const formData = new FormData(event.currentTarget);
@@ -96,7 +94,7 @@ export function CreateBoardDialog({ ref, closeDialog }: DialogProps) {
           : [],
     };
 
-    const validatedResult = zCreateBoardRequest.safeParse(payload);
+    const validatedResult = zUpdateBoardRequest.safeParse(payload);
 
     if (!validatedResult.success) {
       const formattedErrors = makeZodErrorsUserFriendly(validatedResult.error);
@@ -111,8 +109,13 @@ export function CreateBoardDialog({ ref, closeDialog }: DialogProps) {
 
   return (
     <Dialog className="post-dialog" ref={ref} onClick={closeDialog}>
-      <form className={styles.form} method="put" onSubmit={handleCreateBoard}>
-        <h1>Add new board</h1>
+      <form
+        action=""
+        method="put"
+        className={styles.form}
+        onSubmit={handleEditBoard}
+      >
+        <h1>Edit board</h1>
         <Label htmlFor="board-name">Board Name</Label>
         <Input
           className="dialog"
@@ -156,7 +159,7 @@ export function CreateBoardDialog({ ref, closeDialog }: DialogProps) {
           + Add New Column
         </Button>
         <Button className="add-task" type="submit">
-          Create New Board
+          Save Changes
         </Button>
       </form>
     </Dialog>

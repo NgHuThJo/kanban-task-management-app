@@ -9,6 +9,6 @@
   padding: var(--p-base);
 
   &:focus {
-    outline-color: var(--c-input-outline);
+    outline-color: var(--c-primary);
   }
 }

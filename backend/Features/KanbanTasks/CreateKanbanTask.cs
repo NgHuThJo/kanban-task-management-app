@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using backend.Models;
+using backend.Shared;
 using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
@@ -28,6 +30,12 @@ public record CreateSubtaskRequest
     public required string Description { get; init; }
 }
 
+public record CreateKanbanTaskResponse
+{
+    [Range(1, int.MaxValue)]
+    public required int Id { get; init; }
+}
+
 public class CreateKanbanTaskRequestValidator
     : AbstractValidator<CreateKanbanTaskRequest>
 {
@@ -52,7 +60,14 @@ public class CreateSubtaskRequestValidator
 
 public static class CreateKanbanTasksEndpoint
 {
-    public static async Task<Results<ValidationProblem, Created>> Create(
+    public static async Task<
+        Results<
+            ValidationProblem,
+            Created<CreateKanbanTaskResponse>,
+            ProblemHttpResult
+        >
+    > Create(
+        HttpContext httpContext,
         [FromServices] CreateKanbanTaskHandler handler,
         [FromServices] IValidator<CreateKanbanTaskRequest> validator,
         [FromBody] CreateKanbanTaskRequest command
@@ -67,9 +82,23 @@ public static class CreateKanbanTasksEndpoint
             );
         }
 
-        await handler.Handle(command);
+        try
+        {
+            var newKanbanTaskId = await handler.Handle(command);
 
-        return TypedResults.Created();
+            return TypedResults.Created(
+                $"/api/kanbantasks/{newKanbanTaskId.Id}",
+                newKanbanTaskId
+            );
+        }
+        catch (KeyNotFoundException ex)
+        {
+            return TypedResultsProblemDetails.NotFound(
+                httpContext: httpContext,
+                detail: ex.Message,
+                type: ex.GetType().Name
+            );
+        }
     }
 }
 
@@ -77,12 +106,14 @@ public class CreateKanbanTaskHandler(AppDbContext context)
 {
     private readonly AppDbContext _context = context;
 
-    public async Task Handle(CreateKanbanTaskRequest command)
+    public async Task<CreateKanbanTaskResponse> Handle(
+        CreateKanbanTaskRequest command
+    )
     {
         var boardColumn =
             await _context.BoardColumns.FirstOrDefaultAsync(b =>
                 b.Id == command.BoardColumnId
-            ) ?? throw new Exception("Board column not found");
+            ) ?? throw new KeyNotFoundException("Board column not found");
 
         var kanbanTask = new KanbanTask
         {
@@ -100,5 +131,7 @@ public class CreateKanbanTaskHandler(AppDbContext context)
 
         _context.KanbanTasks.Add(kanbanTask);
         await _context.SaveChangesAsync();
+
+        return new CreateKanbanTaskResponse { Id = kanbanTask.Id };
     }
 }

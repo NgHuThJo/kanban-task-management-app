@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { getApiBoardsOptions } from "#frontend/types/@tanstack/react-query.gen";
+import { getApiBoardsOptions } from "#frontend/types/generated/@tanstack/react-query.gen";
 import { useDialog } from "#frontend/hooks/use-dialog";
 import { Button } from "#frontend/components/button/button";
 import { CreateBoardDialog } from "#frontend/components/dialog/create-board";
@@ -10,9 +10,9 @@ export function LandingPage() {
   const { dialogRef, openDialog, handleDialogBackgroundClick } = useDialog();
   const { data } = useQuery(getApiBoardsOptions());
 
-  const isDataArrayEmpty = data?.length ?? 0;
+  const lastElement = data?.at(-1);
 
-  return !isDataArrayEmpty ? (
+  return !lastElement ? (
     <main className={styles.layout}>
       <CreateBoardDialog
         ref={dialogRef}
@@ -24,6 +24,12 @@ export function LandingPage() {
       </Button>
     </main>
   ) : (
-    <Navigate to="/board" />
+    <Navigate
+      to="/"
+      search={(prev) => ({
+        ...prev,
+        id: lastElement.id,
+      })}
+    />
   );
 }

@@ -1,4 +1,5 @@
 import js from "@eslint/js";
+import tseslint from "typescript-eslint";
 import typescriptParser from "@typescript-eslint/parser";
 import typescriptPlugin from "@typescript-eslint/eslint-plugin";
 import reactPlugin from "eslint-plugin-react";
@@ -7,8 +8,16 @@ import prettierPlugin from "eslint-plugin-prettier";
 import prettierConfig from "eslint-config-prettier";
 import globals from "globals";
 
+const browserGlobals = {
+  ...globals.browser, // Add browser globals
+  ...globals.node, // Add Node.js globals
+};
+
+delete browserGlobals["AudioWorkletGlobalScope "];
+
 export default [
   js.configs.recommended, // Built-in recommended ESLint rules
+  ...tseslint.configs.recommended,
   {
     files: ["**/*.{ts,tsx}"],
     languageOptions: {
@@ -33,8 +42,7 @@ export default [
       ecmaVersion: "latest",
       sourceType: "module",
       globals: {
-        ...globals.browser, // Add browser globals
-        ...globals.node, // Add Node.js globals
+        ...browserGlobals,
       },
     },
     plugins: {

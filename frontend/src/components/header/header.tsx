@@ -1,4 +1,5 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
+import { useCurrentBoardId } from "#frontend/store/board";
 import { Button } from "#frontend/components/button/button";
 import { getApiBoardsOptions } from "#frontend/types/@tanstack/react-query.gen";
 import {
@@ -21,14 +22,15 @@ export function Header() {
     close: closeEditDialog,
   } = useToggle();
   const { data } = useSuspenseQuery(getApiBoardsOptions());
+  const currentBoardId = useCurrentBoardId();
 
-  const lastElement = data.at(-1);
+  const currentElement = data.find(({ id }) => id === currentBoardId);
 
   return (
     <>
       <header className={styles.layout}>
-        {isMobile ? <LogoMobile className={styles.logo} /> : null}
-        <h1 className={styles.name}>{lastElement?.name ?? "No Board"}</h1>
+        <LogoMobile className={styles.logo} />
+        <h1 className={styles.name}>{currentElement?.name ?? "No Board"}</h1>
         {isMobile ? (
           <button
             className={styles.chevron}

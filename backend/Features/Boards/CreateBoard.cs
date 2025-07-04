@@ -26,6 +26,12 @@ public record CreateBoardColumnRequest
     public required string Name { get; init; }
 }
 
+public record CreateBoardResponse
+{
+    [Range(1, int.MaxValue)]
+    public required int Id { get; init; }
+}
+
 public class CreateBoardRequestValidator : AbstractValidator<CreateBoardRequest>
 {
     public CreateBoardRequestValidator()
@@ -48,7 +54,11 @@ public class CreateBoardColumnRequestValidator
 public static class CreateBoardEndpoint
 {
     public static async Task<
-        Results<ValidationProblem, Created, ProblemHttpResult>
+        Results<
+            ValidationProblem,
+            Created<CreateBoardResponse>,
+            ProblemHttpResult
+        >
     > Create(
         HttpContext httpContext,
         [FromServices] CreateBoardHandler handler,
@@ -56,8 +66,6 @@ public static class CreateBoardEndpoint
         [FromBody] CreateBoardRequest command
     )
     {
-        Console.WriteLine(httpContext);
-
         var validationResult = await validator.ValidateAsync(command);
 
         if (!validationResult.IsValid)
@@ -69,7 +77,12 @@ public static class CreateBoardEndpoint
 
         try
         {
-            await handler.Handle(command);
+            var newBoardId = await handler.Handle(command);
+
+            return TypedResults.Created(
+                $"/api/boards/{newBoardId.Id}",
+                newBoardId
+            );
         }
         catch (DuplicateNameException ex)
         {
@@ -79,8 +92,6 @@ public static class CreateBoardEndpoint
                 type: ex.GetType().Name
             );
         }
-
-        return TypedResults.Created();
     }
 }
 
@@ -88,7 +99,7 @@ public class CreateBoardHandler(AppDbContext context)
 {
     private readonly AppDbContext _context = context;
 
-    public async Task Handle(CreateBoardRequest command)
+    public async Task<CreateBoardResponse> Handle(CreateBoardRequest command)
     {
         var nameInDb = await _context
             .Boards.Where(b => b.Name == command.Name)
@@ -114,6 +125,9 @@ public class CreateBoardHandler(AppDbContext context)
         };
 
         _context.Boards.Add(board);
+
         await _context.SaveChangesAsync();
+
+        return new CreateBoardResponse { Id = board.Id };
     }
 }

@@ -85,8 +85,8 @@ textarea {
   font-family: var(--ff-root);
   font-weight: var(--fw-root);
   font-size: var(--fs-root);
-  color: var(--c-root);
-  background-color: var(--bgc-root);
+  color: var(--c-text);
+  background-color: var(--c-bg-primary);
 }
 
 @media (prefers-reduced-motion) {

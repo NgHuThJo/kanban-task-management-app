@@ -3,18 +3,22 @@
   grid-template-rows: [header-start] auto [header-end content-start] 1fr [content-end];
   grid-template-columns: [sidebar-start] auto [sidebar-end content-start] 1fr [content-end];
 
-  aside {
+  > aside {
     display: none;
   }
 
-  header {
-    grid-column: content-start / content-end;
+  > header {
+    grid-column: sidebar-start / content-end;
+  }
+
+  > div {
+    grid-area: content-start / content-start / content-end / content-end;
   }
 
   @media (width >= 768px) {
     aside {
       display: revert;
-      grid-row: header-start/ content-end;
+      grid-row: header-end/ content-end;
       grid-column: sidebar-start / sidebar-end;
     }
   }

@@ -4,6 +4,7 @@
   align-items: center;
   padding: 1rem;
   position: relative;
+  background-color: var(--c-bg-secondary);
 }
 
 .edit {

@@ -5,7 +5,7 @@ export default defineConfig({
   output: {
     format: "prettier",
     lint: "eslint",
-    path: "./src/types",
+    path: "./src/types/generated",
   },
   plugins: [
     ...defaultPlugins,
