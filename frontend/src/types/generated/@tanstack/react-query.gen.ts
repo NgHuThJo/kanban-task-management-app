@@ -19,6 +19,7 @@ import type {
   GetApiBoardsData,
   PostApiBoardsData,
   PostApiBoardsError,
+  PostApiBoardsResponse,
   PutApiBoardsData,
   PutApiBoardsError,
   PutApiBoardsResponse,
@@ -28,6 +29,7 @@ import type {
   GetApiKanbantasksData,
   PostApiKanbantasksData,
   PostApiKanbantasksError,
+  PostApiKanbantasksResponse,
   PutApiKanbantasksData,
   PutApiKanbantasksError,
   PutApiKanbantasksResponse,
@@ -131,12 +133,12 @@ export const postApiBoardsOptions = (options: Options<PostApiBoardsData>) => {
 export const postApiBoardsMutation = (
   options?: Partial<Options<PostApiBoardsData>>,
 ): UseMutationOptions<
-  unknown,
+  PostApiBoardsResponse,
   PostApiBoardsError,
   Options<PostApiBoardsData>
 > => {
   const mutationOptions: UseMutationOptions<
-    unknown,
+    PostApiBoardsResponse,
     PostApiBoardsError,
     Options<PostApiBoardsData>
   > = {
@@ -245,12 +247,12 @@ export const postApiKanbantasksOptions = (
 export const postApiKanbantasksMutation = (
   options?: Partial<Options<PostApiKanbantasksData>>,
 ): UseMutationOptions<
-  unknown,
+  PostApiKanbantasksResponse,
   PostApiKanbantasksError,
   Options<PostApiKanbantasksData>
 > => {
   const mutationOptions: UseMutationOptions<
-    unknown,
+    PostApiKanbantasksResponse,
     PostApiKanbantasksError,
     Options<PostApiKanbantasksData>
   > = {

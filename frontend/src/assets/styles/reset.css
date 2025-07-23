@@ -12,6 +12,10 @@ html {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  font-family: var(--ff-root);
+  font-weight: var(--fw-root);
+  font-size: var(--fs-root);
+  color: var(--c-text);
 }
 
 body {
@@ -43,7 +47,6 @@ button {
   transition: opacity var(--transition-duration);
 
   &:hover {
-    cursor: pointer;
     opacity: 0.5;
   }
 }
@@ -56,6 +59,13 @@ h5,
 h6 {
   font-size: revert;
   font-weight: var(--fw-heading);
+  text-wrap: balance;
+}
+
+p,
+li,
+figcaption {
+  max-width: 65ch;
 }
 
 img {
@@ -81,11 +91,7 @@ textarea {
 #root {
   display: grid;
   min-height: 100vh;
-  min-width: var(--min-w-root);
-  font-family: var(--ff-root);
-  font-weight: var(--fw-root);
-  font-size: var(--fs-root);
-  color: var(--c-text);
+  min-width: 20rem;
   background-color: var(--c-bg-primary);
 }
 

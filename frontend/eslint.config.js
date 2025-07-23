@@ -6,6 +6,8 @@ import reactPlugin from "eslint-plugin-react";
 import reactHooksPlugin from "eslint-plugin-react-hooks";
 import prettierPlugin from "eslint-plugin-prettier";
 import prettierConfig from "eslint-config-prettier";
+import importPlugin from "eslint-plugin-import";
+import unusedImportsPlugin from "eslint-plugin-unused-imports";
 import globals from "globals";
 
 const browserGlobals = {
@@ -49,12 +51,16 @@ export default [
       react: reactPlugin,
       "react-hooks": reactHooksPlugin,
       prettier: prettierPlugin,
+      import: importPlugin,
+      "unused-imports": unusedImportsPlugin,
     },
     rules: {
       "react/jsx-filename-extension": [1, { extensions: [".jsx", ".tsx"] }], // Allow JSX in .jsx and .tsx files
       "react-hooks/rules-of-hooks": "error",
       "react-hooks/exhaustive-deps": "warn",
       "prettier/prettier": ["error"],
+      "unused-imports/no-unused-imports": "error",
+      "import/no-duplicates": "warn",
       ...prettierConfig.rules, // Disable rules that conflict with Prettier
     },
   },

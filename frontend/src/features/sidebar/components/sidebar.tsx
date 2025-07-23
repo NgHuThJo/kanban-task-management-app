@@ -1,8 +1,9 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { BoardIcon } from "#frontend/components/icon/icon";
-import { getApiBoardsOptions } from "#frontend/types/@tanstack/react-query.gen";
-import styles from "./sidebar.module.css";
+import { BoardIcon } from "#frontend/components/ui/icon";
+import { getApiBoardsOptions } from "#frontend/types/generated/@tanstack/react-query.gen";
 import { ThemeSwitch } from "#frontend/features/sidebar/components/theme-switch";
+import { CreateBoardDialog } from "#frontend/components/ui/create-board-dialog";
+import styles from "./sidebar.module.css";
 
 export function Sidebar() {
   const { data } = useSuspenseQuery(getApiBoardsOptions());
@@ -20,9 +21,7 @@ export function Sidebar() {
               {name}
             </button>
           ))}
-          <button className={styles["create-item"]}>
-            <BoardIcon />+ Create new board
-          </button>
+          <CreateBoardDialog />
         </div>
       </div>
       <ThemeSwitch />

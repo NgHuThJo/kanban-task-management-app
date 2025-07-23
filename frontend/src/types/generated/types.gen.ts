@@ -9,11 +9,19 @@ export type CreateBoardRequest = {
   boardColumns?: Array<CreateBoardColumnRequest>;
 };
 
+export type CreateBoardResponse = {
+  id: number;
+};
+
 export type CreateKanbanTaskRequest = {
   title: string;
   description: string;
   boardColumnId?: number;
   subtasks?: Array<CreateSubtaskRequest>;
+};
+
+export type CreateKanbanTaskResponse = {
+  id: number;
 };
 
 export type CreateSubtaskRequest = {
@@ -147,8 +155,11 @@ export type PostApiBoardsResponses = {
   /**
    * Created
    */
-  201: unknown;
+  201: CreateBoardResponse;
 };
+
+export type PostApiBoardsResponse =
+  PostApiBoardsResponses[keyof PostApiBoardsResponses];
 
 export type PutApiBoardsData = {
   body: UpdateBoardRequest;
@@ -251,8 +262,11 @@ export type PostApiKanbantasksResponses = {
   /**
    * Created
    */
-  201: unknown;
+  201: CreateKanbanTaskResponse;
 };
+
+export type PostApiKanbantasksResponse =
+  PostApiKanbantasksResponses[keyof PostApiKanbantasksResponses];
 
 export type PutApiKanbantasksData = {
   body: UpdateKanbanTaskRequest;

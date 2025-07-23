@@ -1,20 +1,22 @@
 :root {
-  --min-w-root: 20rem;
-  --p-inline-container: 2rem;
-  --flow-spacing: 1em;
-  --box-shadow:
-    rgba(0, 0, 0, 0.3) 0px 19px 38px, rgba(0, 0, 0, 0.22) 0px 15px 12px;
-}
-
-/* Document flow spacing */
-.flow-spacing {
-  > * + * {
-    margin-top: var(--flow-spacing);
-  }
-}
-
-/* Container */
-.container {
-  max-width: min(90rem, 100% - 2 * var(--p-inline-container));
-  margin: 0 auto;
+  --spacing-1: 0.25rem;
+  --spacing-2: 0.5rem;
+  --spacing-3: 0.75rem;
+  --spacing-4: 1rem;
+  --spacing-5: 1.25rem;
+  --spacing-6: 1.5rem;
+  --spacing-7: 1.75rem;
+  --spacing-8: 2rem;
+  --spacing-9: 2.25rem;
+  --spacing-10: 2.5rem;
+  --spacing-11: 2.75rem;
+  --spacing-12: 3rem;
+  --spacing-13: 3.25rem;
+  --spacing-14: 3.5rem;
+  --spacing-15: 3.75rem;
+  --spacing-16: 4rem;
+  --spacing-17: 4.25rem;
+  --spacing-18: 4.5rem;
+  --spacing-19: 4.75rem;
+  --spacing-20: 5rem;
 }

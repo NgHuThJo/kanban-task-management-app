@@ -11,6 +11,10 @@ export const zCreateBoardRequest = z.object({
   boardColumns: z.array(zCreateBoardColumnRequest).optional(),
 });
 
+export const zCreateBoardResponse = z.object({
+  id: z.number().int().gte(1).lte(2147483647),
+});
+
 export const zCreateSubtaskRequest = z.object({
   description: z.string().min(1).max(40).regex(/\S+/),
 });
@@ -20,6 +24,10 @@ export const zCreateKanbanTaskRequest = z.object({
   description: z.string(),
   boardColumnId: z.number().int().gte(1).lte(2147483647).optional(),
   subtasks: z.array(zCreateSubtaskRequest).optional(),
+});
+
+export const zCreateKanbanTaskResponse = z.object({
+  id: z.number().int().gte(1).lte(2147483647),
 });
 
 export const zDeleteBoardRequest = z.object({
@@ -114,6 +122,11 @@ export const zPostApiBoardsData = z.object({
   query: z.never().optional(),
 });
 
+/**
+ * Created
+ */
+export const zPostApiBoardsResponse = zCreateBoardResponse;
+
 export const zPutApiBoardsData = z.object({
   body: zUpdateBoardRequest,
   headers: z.never().optional(),
@@ -156,6 +169,11 @@ export const zPostApiKanbantasksData = z.object({
   path: z.never().optional(),
   query: z.never().optional(),
 });
+
+/**
+ * Created
+ */
+export const zPostApiKanbantasksResponse = zCreateKanbanTaskResponse;
 
 export const zPutApiKanbantasksData = z.object({
   body: zUpdateKanbanTaskRequest,

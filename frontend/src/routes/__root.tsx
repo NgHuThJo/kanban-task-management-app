@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { createRootRouteWithContext, Outlet } from "@tanstack/react-router";
-import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
+// import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import type { QueryClient } from "@tanstack/react-query";
 import { useTheme } from "#frontend/store/theme";
 
@@ -14,7 +14,7 @@ function Root() {
   const theme = useTheme();
 
   useEffect(() => {
-    const root = document.querySelector("#root");
+    const root = document.querySelector("html");
 
     if (theme === "light") {
       root?.classList.remove("dark");
