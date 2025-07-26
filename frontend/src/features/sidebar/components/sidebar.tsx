@@ -4,19 +4,29 @@ import { getApiBoardsOptions } from "#frontend/types/generated/@tanstack/react-q
 import { ThemeSwitch } from "#frontend/features/sidebar/components/theme-switch";
 import { CreateBoardDialog } from "#frontend/components/ui/create-board-dialog";
 import styles from "./sidebar.module.css";
+import { useBoardStore } from "#frontend/store/board";
 
 export function Sidebar() {
-  const { data } = useSuspenseQuery(getApiBoardsOptions());
+  const { data: boards } = useSuspenseQuery(getApiBoardsOptions());
+  const setBoardId = useBoardStore((state) => state.setCurrentBoardId);
 
-  const boardNames = data.map((board) => board.name);
+  const handleChangeBoard = (id: number) => {
+    setBoardId(id);
+  };
 
   return (
     <aside className={styles.layout}>
       <div>
-        <h2 className={styles.heading}>All Boards ({boardNames.length})</h2>
+        <h2 className={styles.heading}>All Boards ({boards.length})</h2>
         <div>
-          {boardNames.map((name) => (
-            <button className={styles["list-item"]}>
+          {boards.map(({ id, name }) => (
+            <button
+              className={styles["list-item"]}
+              key={id}
+              onClick={() => {
+                handleChangeBoard(id);
+              }}
+            >
               <BoardIcon />
               {name}
             </button>

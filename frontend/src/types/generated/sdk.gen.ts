@@ -136,10 +136,6 @@ export const getApiKanbantasks = <ThrowOnError extends boolean = false>(
   >({
     url: "/api/kanbantasks",
     ...options,
-    headers: {
-      "Content-Type": "application/json",
-      ...options.headers,
-    },
   });
 };
 

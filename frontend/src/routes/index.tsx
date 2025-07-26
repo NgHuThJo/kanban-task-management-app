@@ -5,12 +5,13 @@ import { getApiBoardsOptions } from "#frontend/types/generated/@tanstack/react-q
 import { useQuery } from "@tanstack/react-query";
 import styles from "./index.module.css";
 import { Header } from "#frontend/features/header/components/header";
+import { Board } from "#frontend/features/board/components/board";
 
 export const Route = createFileRoute("/")({
-  component: Board,
+  component: Index,
 });
 
-function Board() {
+function Index() {
   const { data } = useQuery(getApiBoardsOptions());
 
   const currentBoardId = data?.[0]?.id ?? 0;
@@ -20,6 +21,7 @@ function Board() {
       <main className={styles.layout}>
         <Header />
         <Sidebar />
+        <Board />
       </main>
     </BoardStoreProvider>
   );

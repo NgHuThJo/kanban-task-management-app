@@ -47,14 +47,19 @@ export type GetBoardsResponse = {
   boardColumns?: Array<GetBoardColumnsResponse>;
 };
 
-export type GetKanbanTasksRequest = {
-  boardColumnId?: number;
-};
-
 export type GetKanbanTasksResponse = {
   id: number;
   title: string;
   description: string;
+  subTasks?: Array<GetSubtasksResponse>;
+  boardColumnId: number;
+};
+
+export type GetSubtasksResponse = {
+  id: number;
+  description: string;
+  isCompleted: boolean;
+  kanbanTaskId: number;
 };
 
 export type HttpValidationProblemDetails = {
@@ -215,9 +220,11 @@ export type DeleteApiKanbantasksResponse =
   DeleteApiKanbantasksResponses[keyof DeleteApiKanbantasksResponses];
 
 export type GetApiKanbantasksData = {
-  body: GetKanbanTasksRequest;
+  body?: never;
   path?: never;
-  query?: never;
+  query: {
+    BoardColumnId: number;
+  };
   url: "/api/kanbantasks";
 };
 

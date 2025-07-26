@@ -11,7 +11,7 @@ namespace backend.Features.KanbanTasks;
 public record GetKanbanTasksRequest
 {
     [Range(1, int.MaxValue)]
-    public int BoardColumnId { get; set; }
+    public required int BoardColumnId { get; set; }
 }
 
 public record GetKanbanTasksResponse
@@ -23,12 +23,21 @@ public record GetKanbanTasksResponse
     [RegularExpression(@"\S+")]
     public required string Title { get; init; }
     public required string Description { get; init; }
+    public ICollection<GetSubtasksResponse> SubTasks { get; init; } = [];
+
+    [Range(1, int.MaxValue)]
+    public required int BoardColumnId { get; init; }
 }
 
 public record GetSubtasksResponse
 {
+    [Range(1, int.MaxValue)]
+    public required int Id { get; init; }
     public required string Description { get; init; }
     public required bool IsCompleted { get; init; }
+
+    [Range(1, int.MaxValue)]
+    public required int KanbanTaskId { get; init; }
 }
 
 public class GetKanbanTasksRequestValidator
@@ -47,7 +56,7 @@ public static class GetKanbanTasksEndpoint
     > GetAll(
         [FromServices] GetKanbanTasksHandler handler,
         [FromServices] IValidator<GetKanbanTasksRequest> validator,
-        [FromBody] GetKanbanTasksRequest query
+        [AsParameters] GetKanbanTasksRequest query
     )
     {
         var validationResult = await validator.ValidateAsync(query);
@@ -80,6 +89,16 @@ public class GetKanbanTasksHandler(AppDbContext context)
                 Id = t.Id,
                 Title = t.Title,
                 Description = t.Description,
+                BoardColumnId = t.BoardColumnId,
+                SubTasks = t
+                    .Subtasks.Select(s => new GetSubtasksResponse
+                    {
+                        Id = s.Id,
+                        Description = s.Description,
+                        IsCompleted = s.IsCompleted,
+                        KanbanTaskId = s.KanbanTaskId,
+                    })
+                    .ToList(),
             })
             .ToListAsync();
 

@@ -77,9 +77,9 @@
     box-shadow: 0 0 0 1px var(--c-tertiary);
   }
 
-  .form-control {
-    background-color: var(--form-control-rgb);
-  }
+  /* .form-control {
+    background-color: var(--);
+  } */
 }
 
 /* Responsive */

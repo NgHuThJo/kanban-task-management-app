@@ -98,9 +98,9 @@ export function CreateBoardForm() {
 
       setValidationErrors(formattedErrors);
     } else {
-      // mutate({
-      //   body: validatedResult.data,
-      // });
+      mutate({
+        body: validatedResult.data,
+      });
     }
   };
 

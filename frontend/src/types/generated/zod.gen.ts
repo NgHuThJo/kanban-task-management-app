@@ -49,14 +49,19 @@ export const zGetBoardsResponse = z.object({
   boardColumns: z.array(zGetBoardColumnsResponse).optional(),
 });
 
-export const zGetKanbanTasksRequest = z.object({
-  boardColumnId: z.number().int().gte(1).lte(2147483647).optional(),
+export const zGetSubtasksResponse = z.object({
+  id: z.number().int().gte(1).lte(2147483647),
+  description: z.string(),
+  isCompleted: z.boolean(),
+  kanbanTaskId: z.number().int().gte(1).lte(2147483647),
 });
 
 export const zGetKanbanTasksResponse = z.object({
   id: z.number().int().gte(1).lte(2147483647),
   title: z.string().min(1).max(40).regex(/\S+/),
   description: z.string(),
+  subTasks: z.array(zGetSubtasksResponse).optional(),
+  boardColumnId: z.number().int().gte(1).lte(2147483647),
 });
 
 export const zHttpValidationProblemDetails = z.object({
@@ -152,10 +157,12 @@ export const zDeleteApiKanbantasksData = z.object({
 export const zDeleteApiKanbantasksResponse = z.void();
 
 export const zGetApiKanbantasksData = z.object({
-  body: zGetKanbanTasksRequest,
+  body: z.never().optional(),
   headers: z.never().optional(),
   path: z.never().optional(),
-  query: z.never().optional(),
+  query: z.object({
+    BoardColumnId: z.number().int().gte(1).lte(2147483647),
+  }),
 });
 
 /**
