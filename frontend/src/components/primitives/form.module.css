@@ -36,7 +36,7 @@
 }
 
 .form-control::placeholder {
-  color: var(--c-error);
+  color: var(--c-primary);
 }
 
 .form-control::selection {

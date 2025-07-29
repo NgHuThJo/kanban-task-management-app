@@ -1,3 +1,4 @@
+using backend.Features.BoardColumns;
 using backend.Features.Boards;
 using backend.Features.KanbanTasks;
 
@@ -12,6 +13,14 @@ public static class RouteGrouper
         group.MapGet("/", GetBoardsEndpoint.GetAll);
         group.MapPut("/", UpdateBoardEndpoint.Update);
         group.MapDelete("/", DeleteBoardEndpoint.Delete);
+
+        return app;
+    }
+
+    public static WebApplication MapBoardColumnApi(this WebApplication app)
+    {
+        var group = app.MapGroup("/api/boardcolumns");
+        group.MapPost("/", CreateBoardColumnEndpoint.Create);
 
         return app;
     }

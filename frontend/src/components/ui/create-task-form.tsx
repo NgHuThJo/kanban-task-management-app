@@ -13,9 +13,17 @@ import {
   FormControl,
   FormMessage,
   FormSubmit,
+  Label,
 } from "#frontend/components/primitives/form";
-import { Label } from "@radix-ui/react-label";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectValue,
+  SelectItem,
+} from "#frontend/components/primitives/select";
 import { Cross } from "lucide-react";
+import { Textarea } from "#frontend/components/primitives/textarea";
 
 export function CreateTaskForm() {
   const { data, isPending, isError } = useQuery(getApiBoardsOptions());
@@ -34,7 +42,8 @@ export function CreateTaskForm() {
   }
 
   const currentBoard = data.filter(({ id }) => id === currentBoardId);
-  const boardColumnNames = currentBoard.map((column) => column.name);
+  const boardColumnNames =
+    currentBoard.at(-1)?.boardColumns?.map((column) => column.name) ?? [];
 
   const handleAddColumn = () => {
     setColumns((prev) => [...prev, { id: crypto.randomUUID(), name: "" }]);
@@ -66,19 +75,32 @@ export function CreateTaskForm() {
 
   return (
     <Form>
-      <FormField name="board-name">
-        <FormLabel>Board Name</FormLabel>
-        <FormControl required />
+      <FormField name="task-name">
+        <FormLabel>Title</FormLabel>
+        <FormControl required placeholder="e.g. Take coffee break" />
         <FormMessage match="valueMissing">
-          Please enter a valid board name
+          Please enter a valid task title
         </FormMessage>
       </FormField>
-      <Label>Columns</Label>
+      <FormField name="description">
+        <FormLabel>Description</FormLabel>
+        <FormControl asChild>
+          <Textarea
+            required
+            placeholder="e.g. It's always good to take a break. This 15 minute break will recharge the batteries a little."
+          />
+        </FormControl>
+        <FormMessage match="valueMissing">
+          Please enter a description
+        </FormMessage>
+      </FormField>
+      <Label>Subtasks</Label>
       {columns.map(({ id, name }, index) => (
         <div key={id}>
-          <FormField variant="group" name="board-column">
+          <FormField variant="group" name="subtask-column">
             <FormControl
               value={name}
+              placeholder="e.g. Make coffee"
               onChange={(event) => {
                 handleChangeColumnName(event, id);
               }}
@@ -103,9 +125,25 @@ export function CreateTaskForm() {
       <Button variant="link" size="sm" type="button" onClick={handleAddColumn}>
         +Add New Column
       </Button>
+      <FormField name="status">
+        <FormLabel>Status</FormLabel>
+        <FormControl asChild>
+          <Select defaultValue={boardColumnNames?.[0] ?? ""}>
+            <SelectTrigger>
+              <SelectValue placeholder="Choose an item..." />
+            </SelectTrigger>
+            <SelectContent sideOffset={8}>
+              {boardColumnNames.map((columnName) => (
+                <SelectItem value={columnName}>{columnName}</SelectItem>
+              ))}
+              <SelectItem value="add-new-column">Add New Column</SelectItem>
+            </SelectContent>
+          </Select>
+        </FormControl>
+      </FormField>
       <FormSubmit asChild>
-        <Button variant="default" size="lg" type="submit">
-          Create New Board
+        <Button variant="default" size="sm" type="submit">
+          Create New Task
         </Button>
       </FormSubmit>
     </Form>
