@@ -4,11 +4,20 @@ import { z } from "zod";
 
 export const zCreateBoardColumnRequest = z.object({
   name: z.string().min(1).max(40).regex(/\S+/),
+  boardId: z.number().int().gte(1).lte(2147483647),
+});
+
+export const zCreateBoardColumnResponse = z.object({
+  boardColumnId: z.number().int().gte(1).lte(2147483647),
+});
+
+export const zCreateBoardRequestBoardColumn = z.object({
+  name: z.string().min(1).max(40).regex(/\S+/),
 });
 
 export const zCreateBoardRequest = z.object({
   name: z.string().min(1).max(40).regex(/\S+/),
-  boardColumns: z.array(zCreateBoardColumnRequest).optional(),
+  boardColumns: z.array(zCreateBoardRequestBoardColumn).optional(),
 });
 
 export const zCreateBoardResponse = z.object({
@@ -193,3 +202,15 @@ export const zPutApiKanbantasksData = z.object({
  * No Content
  */
 export const zPutApiKanbantasksResponse = z.void();
+
+export const zPostApiBoardcolumnsData = z.object({
+  body: zCreateBoardColumnRequest,
+  headers: z.never().optional(),
+  path: z.never().optional(),
+  query: z.never().optional(),
+});
+
+/**
+ * Created
+ */
+export const zPostApiBoardcolumnsResponse = zCreateBoardColumnResponse;

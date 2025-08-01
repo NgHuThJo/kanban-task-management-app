@@ -10,6 +10,7 @@ import {
   getApiKanbantasks,
   postApiKanbantasks,
   putApiKanbantasks,
+  postApiBoardcolumns,
 } from "../sdk.gen";
 import { type UseMutationOptions, queryOptions } from "@tanstack/react-query";
 import type {
@@ -33,6 +34,9 @@ import type {
   PutApiKanbantasksData,
   PutApiKanbantasksError,
   PutApiKanbantasksResponse,
+  PostApiBoardcolumnsData,
+  PostApiBoardcolumnsError,
+  PostApiBoardcolumnsResponse,
 } from "../types.gen";
 import { client as _heyApiClient } from "../client.gen";
 
@@ -282,6 +286,51 @@ export const putApiKanbantasksMutation = (
   > = {
     mutationFn: async (localOptions) => {
       const { data } = await putApiKanbantasks({
+        ...options,
+        ...localOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
+
+export const postApiBoardcolumnsQueryKey = (
+  options: Options<PostApiBoardcolumnsData>,
+) => createQueryKey("postApiBoardcolumns", options);
+
+export const postApiBoardcolumnsOptions = (
+  options: Options<PostApiBoardcolumnsData>,
+) => {
+  return queryOptions({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await postApiBoardcolumns({
+        ...options,
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryKey: postApiBoardcolumnsQueryKey(options),
+  });
+};
+
+export const postApiBoardcolumnsMutation = (
+  options?: Partial<Options<PostApiBoardcolumnsData>>,
+): UseMutationOptions<
+  PostApiBoardcolumnsResponse,
+  PostApiBoardcolumnsError,
+  Options<PostApiBoardcolumnsData>
+> => {
+  const mutationOptions: UseMutationOptions<
+    PostApiBoardcolumnsResponse,
+    PostApiBoardcolumnsError,
+    Options<PostApiBoardcolumnsData>
+  > = {
+    mutationFn: async (localOptions) => {
+      const { data } = await postApiBoardcolumns({
         ...options,
         ...localOptions,
         throwOnError: true,

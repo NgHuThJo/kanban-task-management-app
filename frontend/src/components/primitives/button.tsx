@@ -11,12 +11,14 @@ const buttonVariants = cva(styles.button, {
       ghost: styles.ghost,
       link: styles.link,
       cancel: styles.cancel,
+      select: styles.select,
     },
     size: {
       default: styles["default-size"],
       sm: styles.sm,
       lg: styles.lg,
       icon: styles.icon,
+      select: styles["select-size"],
     },
     intent: {
       default: "",

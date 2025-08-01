@@ -2,11 +2,20 @@
 
 export type CreateBoardColumnRequest = {
   name: string;
+  boardId: number;
+};
+
+export type CreateBoardColumnResponse = {
+  boardColumnId: number;
 };
 
 export type CreateBoardRequest = {
   name: string;
-  boardColumns?: Array<CreateBoardColumnRequest>;
+  boardColumns?: Array<CreateBoardRequestBoardColumn>;
+};
+
+export type CreateBoardRequestBoardColumn = {
+  name: string;
 };
 
 export type CreateBoardResponse = {
@@ -301,6 +310,33 @@ export type PutApiKanbantasksResponses = {
 
 export type PutApiKanbantasksResponse =
   PutApiKanbantasksResponses[keyof PutApiKanbantasksResponses];
+
+export type PostApiBoardcolumnsData = {
+  body: CreateBoardColumnRequest;
+  path?: never;
+  query?: never;
+  url: "/api/boardcolumns";
+};
+
+export type PostApiBoardcolumnsErrors = {
+  /**
+   * Bad Request
+   */
+  400: HttpValidationProblemDetails;
+};
+
+export type PostApiBoardcolumnsError =
+  PostApiBoardcolumnsErrors[keyof PostApiBoardcolumnsErrors];
+
+export type PostApiBoardcolumnsResponses = {
+  /**
+   * Created
+   */
+  201: CreateBoardColumnResponse;
+};
+
+export type PostApiBoardcolumnsResponse =
+  PostApiBoardcolumnsResponses[keyof PostApiBoardcolumnsResponses];
 
 export type ClientOptions = {
   baseUrl: "http://localhost:5096/" | (string & {});

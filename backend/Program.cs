@@ -63,6 +63,6 @@ else
 
 app.UseExceptionHandler();
 app.UseStatusCodePages();
-app.MapBoardApi().MapKanbanTaskApi();
+app.MapBoardApi().MapKanbanTaskApi().MapBoardColumnApi();
 
 app.Run();

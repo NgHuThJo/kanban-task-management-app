@@ -15,11 +15,11 @@ public record CreateBoardRequest
     [StringLength(TITLE_MAX_LENGTH, MinimumLength = 1)]
     [RegularExpression(@"\S+")]
     public required string Name { get; init; }
-    public ICollection<CreateBoardColumnRequest> BoardColumns { get; init; } =
+    public ICollection<CreateBoardRequestBoardColumn> BoardColumns { get; init; } =
         [];
 }
 
-public record CreateBoardColumnRequest
+public record CreateBoardRequestBoardColumn
 {
     [StringLength(TITLE_MAX_LENGTH, MinimumLength = 1)]
     [RegularExpression(@"\S+")]
@@ -43,7 +43,7 @@ public class CreateBoardRequestValidator : AbstractValidator<CreateBoardRequest>
 }
 
 public class CreateBoardColumnRequestValidator
-    : AbstractValidator<CreateBoardColumnRequest>
+    : AbstractValidator<CreateBoardRequestBoardColumn>
 {
     public CreateBoardColumnRequestValidator()
     {

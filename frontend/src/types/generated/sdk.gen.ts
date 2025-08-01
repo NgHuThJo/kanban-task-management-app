@@ -25,6 +25,9 @@ import type {
   PutApiKanbantasksData,
   PutApiKanbantasksResponses,
   PutApiKanbantasksErrors,
+  PostApiBoardcolumnsData,
+  PostApiBoardcolumnsResponses,
+  PostApiBoardcolumnsErrors,
 } from "./types.gen";
 import { client as _heyApiClient } from "./client.gen";
 
@@ -165,6 +168,23 @@ export const putApiKanbantasks = <ThrowOnError extends boolean = false>(
     ThrowOnError
   >({
     url: "/api/kanbantasks",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+};
+
+export const postApiBoardcolumns = <ThrowOnError extends boolean = false>(
+  options: Options<PostApiBoardcolumnsData, ThrowOnError>,
+) => {
+  return (options.client ?? _heyApiClient).post<
+    PostApiBoardcolumnsResponses,
+    PostApiBoardcolumnsErrors,
+    ThrowOnError
+  >({
+    url: "/api/boardcolumns",
     ...options,
     headers: {
       "Content-Type": "application/json",

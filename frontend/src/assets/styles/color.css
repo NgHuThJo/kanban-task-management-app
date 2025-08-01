@@ -25,6 +25,7 @@
   --c-heading: light-dark(var(--c-heading-light), var(--c-heading-dark));
   --c-text: var(--gray-500);
   --c-error: var(--red-300);
+  --c-button-hover: var(--purple-400);
 
   --c-bg-cancel-light: var(--gray-100);
   --c-bg-cancel-dark: var(--gray-800);

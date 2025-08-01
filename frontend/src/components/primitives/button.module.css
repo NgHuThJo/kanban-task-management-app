@@ -48,6 +48,29 @@
   }
 }
 
+.select {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: start;
+  gap: 0.5rem;
+  width: 100%;
+  min-height: 1.5rem;
+  padding: 0.375rem 2rem 0.375rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: normal;
+  cursor: default;
+  color: var(--c-primary);
+  border-radius: 0.25rem;
+  outline: none;
+  user-select: none;
+
+  &:focus,
+  &:hover {
+    background-color: var(--c-button-hover);
+  }
+}
+
 .destructive-default {
   background-color: var(--c-bg-error);
   color: var(--c-secondary);
@@ -61,6 +84,10 @@
     outline: 0.125rem dashed var(--c-primary);
     outline-offset: 1px;
   } */
+}
+
+.select-size {
+  padding: 0.375rem 2rem 0.375rem 0.5rem;
 }
 
 .cancel {

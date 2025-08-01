@@ -1,9 +1,16 @@
 import type { Column } from "#frontend/types/custom/custom";
 import type { CreateKanbanTaskRequest } from "#frontend/types/generated";
-import type { makeZodErrorsUserFriendly } from "#frontend/utils/zod";
-import { useState, type ChangeEvent } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { getApiBoardsOptions } from "#frontend/types/generated/@tanstack/react-query.gen";
+import { makeZodErrorsUserFriendly } from "#frontend/utils/zod";
+import { useState, type ChangeEvent, type FormEvent } from "react";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
+import {
+  getApiBoardsOptions,
+  postApiKanbantasksMutation,
+} from "#frontend/types/generated/@tanstack/react-query.gen";
 import { useCurrentBoardId } from "#frontend/store/board";
 import { Button } from "#frontend/components/primitives/button";
 import {
@@ -24,9 +31,21 @@ import {
 } from "#frontend/components/primitives/select";
 import { Cross } from "lucide-react";
 import { Textarea } from "#frontend/components/primitives/textarea";
+import { CreateBoardColumnDialog } from "#frontend/components/ui/create-board-column-dialog";
+import { formDataToObject } from "#frontend/utils/object";
+import { zCreateKanbanTaskRequest } from "#frontend/types/generated/zod.gen";
 
 export function CreateTaskForm() {
-  const { data, isPending, isError } = useQuery(getApiBoardsOptions());
+  const queryClient = useQueryClient();
+  const { isPending, mutate } = useMutation({
+    ...postApiKanbantasksMutation(),
+    onSuccess: async () => {
+      await queryClient.invalidateQueries({
+        queryKey: getApiBoardsOptions().queryKey,
+      });
+    },
+  });
+  const { data } = useSuspenseQuery(getApiBoardsOptions());
   const currentBoardId = useCurrentBoardId();
   const [validationErrors, setValidationErrors] = useState<ReturnType<
     typeof makeZodErrorsUserFriendly<CreateKanbanTaskRequest>
@@ -35,10 +54,6 @@ export function CreateTaskForm() {
 
   if (isPending) {
     return <p>Loading...</p>;
-  }
-
-  if (isError) {
-    return <p>Error.</p>;
   }
 
   const currentBoard = data.filter(({ id }) => id === currentBoardId);
@@ -73,8 +88,52 @@ export function CreateTaskForm() {
     );
   };
 
+  const handleChangeSelectValue = (value: string) => {
+    if (value === "add-new-column") {
+      return;
+    }
+  };
+
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.currentTarget);
+    const convertedFormData = formDataToObject(formData);
+    const title = convertedFormData["task-name"];
+    const description = convertedFormData["description"];
+    const subtasks = convertedFormData["subtask-column"];
+    const status = convertedFormData["status"];
+
+    const payload = {
+      title,
+      description,
+      boardColumnId: currentBoard
+        .at(-1)
+        ?.boardColumns?.find((value) => value.name === status)?.id,
+      subtasks: Array.isArray(subtasks)
+        ? subtasks.map((value) => ({
+            description: value,
+          }))
+        : subtasks !== undefined
+          ? Array({ description: subtasks })
+          : [],
+    };
+
+    const validatedResult = zCreateKanbanTaskRequest.safeParse(payload);
+
+    if (!validatedResult.success) {
+      const formattedErrors = makeZodErrorsUserFriendly(validatedResult.error);
+
+      console.log("Form errors", formattedErrors);
+    } else {
+      mutate({
+        body: validatedResult.data,
+      });
+    }
+  };
+
   return (
-    <Form>
+    <Form onSubmit={handleSubmit}>
       <FormField name="task-name">
         <FormLabel>Title</FormLabel>
         <FormControl required placeholder="e.g. Take coffee break" />
@@ -128,7 +187,10 @@ export function CreateTaskForm() {
       <FormField name="status">
         <FormLabel>Status</FormLabel>
         <FormControl asChild>
-          <Select defaultValue={boardColumnNames?.[0] ?? ""}>
+          <Select
+            onValueChange={handleChangeSelectValue}
+            defaultValue={boardColumnNames?.[0] ?? ""}
+          >
             <SelectTrigger>
               <SelectValue placeholder="Choose an item..." />
             </SelectTrigger>
@@ -136,7 +198,7 @@ export function CreateTaskForm() {
               {boardColumnNames.map((columnName) => (
                 <SelectItem value={columnName}>{columnName}</SelectItem>
               ))}
-              <SelectItem value="add-new-column">Add New Column</SelectItem>
+              <CreateBoardColumnDialog />
             </SelectContent>
           </Select>
         </FormControl>

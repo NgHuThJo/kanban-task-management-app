@@ -88,7 +88,7 @@ public class CreateBoardColumnHandler(AppDbContext context)
         CreateBoardColumnRequest command
     )
     {
-        var nameInDb = _context
+        var nameInDb = await _context
             .BoardColumns.Where(b =>
                 b.BoardId == command.BoardId && b.Name == command.Name
             )
