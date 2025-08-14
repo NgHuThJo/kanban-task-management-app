@@ -14,7 +14,7 @@ type CreateTaskDialogProps = {
   isMobile: boolean;
 };
 
-export function CreateTaskDialog({ isMobile }: CreateTaskDialogProps) {
+export function CreateKanbanTaskDialog({ isMobile }: CreateTaskDialogProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>

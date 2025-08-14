@@ -25,9 +25,15 @@ import type {
   PutApiKanbantasksData,
   PutApiKanbantasksResponses,
   PutApiKanbantasksErrors,
+  PutApiKanbantasksStatusData,
+  PutApiKanbantasksStatusResponses,
+  PutApiKanbantasksStatusErrors,
   PostApiBoardcolumnsData,
   PostApiBoardcolumnsResponses,
   PostApiBoardcolumnsErrors,
+  PostApiSubtasksData,
+  PostApiSubtasksResponses,
+  PostApiSubtasksErrors,
 } from "./types.gen";
 import { client as _heyApiClient } from "./client.gen";
 
@@ -176,6 +182,23 @@ export const putApiKanbantasks = <ThrowOnError extends boolean = false>(
   });
 };
 
+export const putApiKanbantasksStatus = <ThrowOnError extends boolean = false>(
+  options: Options<PutApiKanbantasksStatusData, ThrowOnError>,
+) => {
+  return (options.client ?? _heyApiClient).put<
+    PutApiKanbantasksStatusResponses,
+    PutApiKanbantasksStatusErrors,
+    ThrowOnError
+  >({
+    url: "/api/kanbantasks/status",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+};
+
 export const postApiBoardcolumns = <ThrowOnError extends boolean = false>(
   options: Options<PostApiBoardcolumnsData, ThrowOnError>,
 ) => {
@@ -185,6 +208,23 @@ export const postApiBoardcolumns = <ThrowOnError extends boolean = false>(
     ThrowOnError
   >({
     url: "/api/boardcolumns",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+};
+
+export const postApiSubtasks = <ThrowOnError extends boolean = false>(
+  options: Options<PostApiSubtasksData, ThrowOnError>,
+) => {
+  return (options.client ?? _heyApiClient).post<
+    PostApiSubtasksResponses,
+    PostApiSubtasksErrors,
+    ThrowOnError
+  >({
+    url: "/api/subtasks",
     ...options,
     headers: {
       "Content-Type": "application/json",

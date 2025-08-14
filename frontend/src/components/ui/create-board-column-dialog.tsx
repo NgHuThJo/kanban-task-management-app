@@ -25,7 +25,13 @@ import { useCurrentBoardId } from "#frontend/store/board";
 import { zCreateBoardColumnRequest } from "#frontend/types/generated/zod.gen";
 import { makeZodErrorsUserFriendly } from "#frontend/utils/zod";
 
-export function CreateBoardColumnDialog() {
+type CreateBoardColumnDialogProps = {
+  triggerButtonText: string;
+};
+
+export function CreateBoardColumnDialog({
+  triggerButtonText,
+}: CreateBoardColumnDialogProps) {
   const currentBoardId = useCurrentBoardId();
   const queryClient = useQueryClient();
   const { isPending, mutate } = useMutation({
@@ -71,7 +77,7 @@ export function CreateBoardColumnDialog() {
     <Dialog>
       <DialogTrigger asChild>
         <Button variant="select" size="select">
-          Add New Column
+          {triggerButtonText}
         </Button>
       </DialogTrigger>
       <DialogContent aria-describedby="" showCloseButton={false}>

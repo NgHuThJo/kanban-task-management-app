@@ -10,7 +10,7 @@ import {
 import styles from "./header.module.css";
 import { useToggle } from "#frontend/hooks/use-toggle";
 import { useMediaQuery } from "#frontend/hooks/use-media-query";
-import { CreateTaskDialog } from "#frontend/components/ui/create-task-dialog";
+import { CreateKanbanTaskDialog } from "#frontend/components/ui/create-task-dialog";
 import { EditBoardPopover } from "#frontend/components/ui/edit-board-popover";
 
 export function Header() {
@@ -36,7 +36,7 @@ export function Header() {
             {isLeftDialogOpen ? <ChevronUp /> : <ChevronDown />}
           </Button>
         ) : null}
-        <CreateTaskDialog isMobile={isMobile} />
+        <CreateKanbanTaskDialog isMobile={isMobile} />
         <EditBoardPopover />
       </header>
     </>

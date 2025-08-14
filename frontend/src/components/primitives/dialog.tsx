@@ -22,6 +22,19 @@ const dialogCloseVariants = cva("", {
     variant: {
       default: styles["dialog-close"],
       cancel: "",
+      group: styles["dialog-close-group"],
+    },
+  },
+  defaultVariants: {
+    variant: "default",
+  },
+});
+
+const dialogHeaderVariants = cva(styles["dialog-header"], {
+  variants: {
+    variant: {
+      default: "",
+      row: styles["dialog-header-row"],
     },
   },
   defaultVariants: {
@@ -106,11 +119,15 @@ function DialogContent({
   );
 }
 
-function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
+function DialogHeader({
+  className,
+  variant,
+  ...props
+}: React.ComponentProps<"div"> & VariantProps<typeof dialogHeaderVariants>) {
   return (
     <div
       data-slot="dialog-header"
-      className={cn(styles["dialog-header"], className)}
+      className={cn(dialogHeaderVariants({ variant, className }))}
       {...props}
     />
   );

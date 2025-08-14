@@ -10,6 +10,7 @@ const formFieldVariants = cva("", {
     variant: {
       default: styles["form-field"],
       group: styles["form-group"],
+      checkbox: styles["form-checkbox-group"],
     },
   },
   defaultVariants: {

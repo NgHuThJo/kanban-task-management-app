@@ -19,7 +19,7 @@ public record CreateKanbanTaskRequest
     public required string Description { get; init; }
 
     [Range(1, int.MaxValue)]
-    public int BoardColumnId { get; init; }
+    public required int BoardColumnId { get; init; }
     public ICollection<CreateSubtaskRequest> Subtasks { get; init; } = [];
 }
 
@@ -34,6 +34,9 @@ public record CreateKanbanTaskResponse
 {
     [Range(1, int.MaxValue)]
     public required int Id { get; init; }
+
+    [Range(1, int.MaxValue)]
+    public required int BoardColumnId { get; init; }
 }
 
 public class CreateKanbanTaskRequestValidator
@@ -132,6 +135,10 @@ public class CreateKanbanTaskHandler(AppDbContext context)
         _context.KanbanTasks.Add(kanbanTask);
         await _context.SaveChangesAsync();
 
-        return new CreateKanbanTaskResponse { Id = kanbanTask.Id };
+        return new CreateKanbanTaskResponse
+        {
+            Id = kanbanTask.Id,
+            BoardColumnId = kanbanTask.BoardColumnId,
+        };
     }
 }

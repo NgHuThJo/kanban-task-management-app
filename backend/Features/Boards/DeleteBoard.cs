@@ -10,7 +10,7 @@ namespace backend.Features.Boards;
 public record DeleteBoardRequest
 {
     [Range(1, int.MaxValue)]
-    public int Id { get; init; }
+    public required int Id { get; init; }
 }
 
 public class DeleteBoardRequestValidator : AbstractValidator<DeleteBoardRequest>

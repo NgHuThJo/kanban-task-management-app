@@ -15,7 +15,7 @@ public record GetBoardsResponse
     [StringLength(TITLE_MAX_LENGTH, MinimumLength = 1)]
     [RegularExpression(@"\S+")]
     public required string Name { get; init; }
-    public ICollection<GetBoardColumnsResponse> BoardColumns { get; init; } =
+    public required ICollection<GetBoardColumnsResponse> BoardColumns { get; init; } =
         [];
 }
 

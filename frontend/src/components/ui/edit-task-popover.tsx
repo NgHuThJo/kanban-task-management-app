@@ -4,11 +4,15 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "#frontend/components/primitives/popover";
-import { DeleteBoardDialog } from "#frontend/components/ui/delete-board-dialog";
+import { UpdateKanbantaskDialog } from "#frontend/components/ui/update-task-dialog";
 import { VerticalEllipsis } from "#frontend/components/ui/icon";
-import { UpdateBoardDialog } from "#frontend/components/ui/update-board-dialog";
+import type { GetKanbanTasksResponse } from "#frontend/types/generated";
 
-export function EditBoardPopover() {
+type EditKanbantaskPopoverProps = {
+  task: GetKanbanTasksResponse;
+};
+
+export function EditKanbanTaskPopover({ task }: EditKanbantaskPopoverProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>
@@ -16,9 +20,8 @@ export function EditBoardPopover() {
           <VerticalEllipsis />
         </Button>
       </PopoverTrigger>
-      <PopoverContent align="end" sideOffset={8}>
-        <UpdateBoardDialog />
-        <DeleteBoardDialog />
+      <PopoverContent align="end" sideOffset={16}>
+        <UpdateKanbantaskDialog task={task} />
       </PopoverContent>
     </Popover>
   );

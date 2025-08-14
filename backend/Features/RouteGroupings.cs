@@ -1,6 +1,7 @@
 using backend.Features.BoardColumns;
 using backend.Features.Boards;
 using backend.Features.KanbanTasks;
+using backend.Features.SubTasks;
 
 namespace backend.Features;
 
@@ -32,6 +33,15 @@ public static class RouteGrouper
         group.MapGet("/", GetKanbanTasksEndpoint.GetAll);
         group.MapPut("/", UpdateKanbanTaskEndpoint.Update);
         group.MapDelete("/", DeleteKanbanTaskEndpoint.Delete);
+        group.MapPut("/status", ChangeKanbanTaskStatusEndpoint.ChangeStatus);
+
+        return app;
+    }
+
+    public static WebApplication MapSubTaskApi(this WebApplication app)
+    {
+        var group = app.MapGroup("/api/subtasks");
+        group.MapPost("/", ToggleSubTaskStatusEndpoint.Toggle);
 
         return app;
     }

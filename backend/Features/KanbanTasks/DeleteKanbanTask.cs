@@ -9,7 +9,7 @@ namespace backend.Features.KanbanTasks;
 public record DeleteKanbanTaskRequest
 {
     [Range(1, int.MaxValue)]
-    public int Id { get; init; }
+    public required int Id { get; init; }
 }
 
 public class DeleteKanbanTaskValidator

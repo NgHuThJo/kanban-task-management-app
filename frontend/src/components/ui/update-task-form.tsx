@@ -1,5 +1,8 @@
-import type { Column } from "#frontend/types/custom/custom";
-import type { CreateKanbanTaskRequest } from "#frontend/types/generated";
+import type { UpdateColumn } from "#frontend/types/custom/custom";
+import type {
+  CreateKanbanTaskRequest,
+  GetKanbanTasksResponse,
+} from "#frontend/types/generated";
 import { makeZodErrorsUserFriendly } from "#frontend/utils/zod";
 import { useState, type ChangeEvent, type FormEvent } from "react";
 import {
@@ -10,7 +13,7 @@ import {
 import {
   getApiBoardsOptions,
   getApiKanbantasksOptions,
-  postApiKanbantasksMutation,
+  putApiKanbantasksMutation,
 } from "#frontend/types/generated/@tanstack/react-query.gen";
 import { useCurrentBoardId } from "#frontend/store/board";
 import { Button } from "#frontend/components/primitives/button";
@@ -34,12 +37,16 @@ import { Cross } from "lucide-react";
 import { Textarea } from "#frontend/components/primitives/textarea";
 import { CreateBoardColumnDialog } from "#frontend/components/ui/create-board-column-dialog";
 import { formDataToObject } from "#frontend/utils/object";
-import { zCreateKanbanTaskRequest } from "#frontend/types/generated/zod.gen";
+import { zUpdateKanbanTaskRequest } from "#frontend/types/generated/zod.gen";
 
-export function CreateTaskForm() {
+type UpdateKanbantaskFormProps = {
+  task: GetKanbanTasksResponse;
+};
+
+export function UpdateKanbanTaskForm({ task }: UpdateKanbantaskFormProps) {
   const queryClient = useQueryClient();
   const { isPending, mutate } = useMutation({
-    ...postApiKanbantasksMutation(),
+    ...putApiKanbantasksMutation(),
     onSuccess: async (data) => {
       await queryClient.invalidateQueries({
         queryKey: getApiKanbantasksOptions({
@@ -55,18 +62,32 @@ export function CreateTaskForm() {
   const [validationErrors, setValidationErrors] = useState<ReturnType<
     typeof makeZodErrorsUserFriendly<CreateKanbanTaskRequest>
   > | null>(null);
-  const [columns, setColumns] = useState<Column[]>([]);
+  const [columns, setColumns] = useState<UpdateColumn[]>(() => {
+    const data =
+      task.subTasks?.map(({ id, description }) => ({
+        id: crypto.randomUUID(),
+        realId: id,
+        name: description,
+      })) ?? [];
+
+    return data;
+  });
 
   if (isPending) {
     return <p>Loading...</p>;
   }
 
   const currentBoard = data.filter(({ id }) => id === currentBoardId);
-  const boardColumnNames =
-    currentBoard.at(-1)?.boardColumns?.map((column) => column.name) ?? [];
+  const currentBoardColumn = currentBoard?.[0]?.boardColumns.find(
+    (column) => column.id === task.boardColumnId,
+  );
+  const boardColumnNames = currentBoard.at(-1)?.boardColumns ?? [];
 
   const handleAddColumn = () => {
-    setColumns((prev) => [...prev, { id: crypto.randomUUID(), name: "" }]);
+    setColumns((prev) => [
+      ...prev,
+      { id: crypto.randomUUID(), realId: 0, name: "" },
+    ]);
   };
 
   const handleDeleteColumn = (columnId: string, index: number) => {
@@ -107,24 +128,44 @@ export function CreateTaskForm() {
     const title = convertedFormData["task-name"];
     const description = convertedFormData["description"];
     const subtasks = convertedFormData["subtask-column"];
+
+    const convertedSubtasks = Array.isArray(subtasks)
+      ? subtasks.map((encodedTask) => {
+          const taskString = encodedTask as string;
+          let splitString: [string, string];
+
+          splitString = taskString.split("-") as [string, string];
+
+          return {
+            id: Number(splitString[0]),
+            description: splitString[1],
+          };
+        })
+      : subtasks !== undefined
+        ? Array.from({ length: 1 }, () => {
+            const taskString = subtasks as string;
+            let splitString: [string, string];
+
+            splitString = taskString.split("-") as [string, string];
+
+            return {
+              id: Number(splitString[0]),
+              description: splitString[1],
+            };
+          })
+        : [];
+
     const status = convertedFormData["status"];
 
     const payload = {
       title,
       description,
-      boardColumnId: currentBoard
-        .at(-1)
-        ?.boardColumns?.find((value) => value.name === status)?.id,
-      subtasks: Array.isArray(subtasks)
-        ? subtasks.map((value) => ({
-            description: value,
-          }))
-        : subtasks !== undefined
-          ? Array({ description: subtasks })
-          : undefined,
+      id: task.id,
+      status: Number(status),
+      subtasks: convertedSubtasks,
     };
 
-    const validatedResult = zCreateKanbanTaskRequest.safeParse(payload);
+    const validatedResult = zUpdateKanbanTaskRequest.safeParse(payload);
 
     if (!validatedResult.success) {
       const formattedErrors = makeZodErrorsUserFriendly(validatedResult.error);
@@ -141,12 +182,16 @@ export function CreateTaskForm() {
     <Form onSubmit={handleSubmit}>
       <FormField name="task-name">
         <FormLabel>Title</FormLabel>
-        <FormControl required placeholder="e.g. Take coffee break" />
+        <FormControl
+          required
+          placeholder="e.g. Take coffee break"
+          defaultValue={task.title}
+        />
         <FormMessage match="valueMissing">
           Please enter a valid task title
         </FormMessage>
       </FormField>
-      <FormField name="description">
+      <FormField name="description" defaultValue={task.description}>
         <FormLabel>Description</FormLabel>
         <FormControl asChild>
           <Textarea
@@ -159,11 +204,11 @@ export function CreateTaskForm() {
         </FormMessage>
       </FormField>
       <Label>Subtasks</Label>
-      {columns.map(({ id, name }, index) => (
+      {columns.map(({ id, realId, name }, index) => (
         <div key={id}>
           <FormField variant="group" name="subtask-column">
             <FormControl
-              value={name}
+              value={`${realId}-${name}`}
               placeholder="e.g. Make coffee"
               onChange={(event) => {
                 handleChangeColumnName(event, id);
@@ -194,14 +239,14 @@ export function CreateTaskForm() {
         <FormControl asChild>
           <Select
             onValueChange={handleChangeSelectValue}
-            defaultValue={boardColumnNames?.[0] ?? ""}
+            defaultValue={currentBoardColumn?.id.toString()}
           >
             <SelectTrigger>
               <SelectValue placeholder="Choose an item..." />
             </SelectTrigger>
             <SelectContent sideOffset={8}>
-              {boardColumnNames.map((columnName) => (
-                <SelectItem value={columnName}>{columnName}</SelectItem>
+              {boardColumnNames.map(({ id, name }) => (
+                <SelectItem value={id.toString()}>{name}</SelectItem>
               ))}
               <CreateBoardColumnDialog triggerButtonText="+ Add New Column" />
             </SelectContent>

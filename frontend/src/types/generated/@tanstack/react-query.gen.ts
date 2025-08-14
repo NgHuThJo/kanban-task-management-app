@@ -10,7 +10,9 @@ import {
   getApiKanbantasks,
   postApiKanbantasks,
   putApiKanbantasks,
+  putApiKanbantasksStatus,
   postApiBoardcolumns,
+  postApiSubtasks,
 } from "../sdk.gen";
 import { type UseMutationOptions, queryOptions } from "@tanstack/react-query";
 import type {
@@ -34,9 +36,15 @@ import type {
   PutApiKanbantasksData,
   PutApiKanbantasksError,
   PutApiKanbantasksResponse,
+  PutApiKanbantasksStatusData,
+  PutApiKanbantasksStatusError,
+  PutApiKanbantasksStatusResponse,
   PostApiBoardcolumnsData,
   PostApiBoardcolumnsError,
   PostApiBoardcolumnsResponse,
+  PostApiSubtasksData,
+  PostApiSubtasksError,
+  PostApiSubtasksResponse,
 } from "../types.gen";
 import { client as _heyApiClient } from "../client.gen";
 
@@ -296,6 +304,30 @@ export const putApiKanbantasksMutation = (
   return mutationOptions;
 };
 
+export const putApiKanbantasksStatusMutation = (
+  options?: Partial<Options<PutApiKanbantasksStatusData>>,
+): UseMutationOptions<
+  PutApiKanbantasksStatusResponse,
+  PutApiKanbantasksStatusError,
+  Options<PutApiKanbantasksStatusData>
+> => {
+  const mutationOptions: UseMutationOptions<
+    PutApiKanbantasksStatusResponse,
+    PutApiKanbantasksStatusError,
+    Options<PutApiKanbantasksStatusData>
+  > = {
+    mutationFn: async (localOptions) => {
+      const { data } = await putApiKanbantasksStatus({
+        ...options,
+        ...localOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
+
 export const postApiBoardcolumnsQueryKey = (
   options: Options<PostApiBoardcolumnsData>,
 ) => createQueryKey("postApiBoardcolumns", options);
@@ -331,6 +363,51 @@ export const postApiBoardcolumnsMutation = (
   > = {
     mutationFn: async (localOptions) => {
       const { data } = await postApiBoardcolumns({
+        ...options,
+        ...localOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
+
+export const postApiSubtasksQueryKey = (
+  options: Options<PostApiSubtasksData>,
+) => createQueryKey("postApiSubtasks", options);
+
+export const postApiSubtasksOptions = (
+  options: Options<PostApiSubtasksData>,
+) => {
+  return queryOptions({
+    queryFn: async ({ queryKey, signal }) => {
+      const { data } = await postApiSubtasks({
+        ...options,
+        ...queryKey[0],
+        signal,
+        throwOnError: true,
+      });
+      return data;
+    },
+    queryKey: postApiSubtasksQueryKey(options),
+  });
+};
+
+export const postApiSubtasksMutation = (
+  options?: Partial<Options<PostApiSubtasksData>>,
+): UseMutationOptions<
+  PostApiSubtasksResponse,
+  PostApiSubtasksError,
+  Options<PostApiSubtasksData>
+> => {
+  const mutationOptions: UseMutationOptions<
+    PostApiSubtasksResponse,
+    PostApiSubtasksError,
+    Options<PostApiSubtasksData>
+  > = {
+    mutationFn: async (localOptions) => {
+      const { data } = await postApiSubtasks({
         ...options,
         ...localOptions,
         throwOnError: true,

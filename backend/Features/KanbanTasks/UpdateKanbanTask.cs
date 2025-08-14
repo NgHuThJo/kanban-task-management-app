@@ -11,23 +11,35 @@ namespace backend.Features.KanbanTasks;
 public record UpdateKanbanTaskRequest
 {
     [Range(1, int.MaxValue)]
-    public int Id { get; init; }
+    public required int Id { get; init; }
 
     [StringLength(TITLE_MAX_LENGTH, MinimumLength = 1)]
     [RegularExpression(@"\S+")]
     public required string Title { get; init; }
     public required string Description { get; init; }
     public ICollection<UpdateSubtaskRequest> Subtasks { get; init; } = [];
+
+    [Range(1, int.MaxValue)]
+    public required int BoardColumnId { get; init; }
 }
 
 public record UpdateSubtaskRequest
 {
-    [Range(1, int.MaxValue)]
-    public int Id { get; init; }
+    [Range(0, int.MaxValue)]
+    public required int Id { get; init; }
 
     [StringLength(TITLE_MAX_LENGTH, MinimumLength = 1)]
     [RegularExpression(@"\S+")]
     public required string Description { get; init; }
+}
+
+public record UpdateKanbanTaskResponse
+{
+    [Range(1, int.MaxValue)]
+    public required int Id { get; init; }
+
+    [Range(1, int.MaxValue)]
+    public required int BoardColumnId { get; init; }
 }
 
 public class UpdateKanbanTaskValidator
@@ -52,7 +64,9 @@ public class UpdateSubtaskValidator : AbstractValidator<UpdateSubtaskRequest>
 
 public static class UpdateKanbanTaskEndpoint
 {
-    public static async Task<Results<ValidationProblem, NoContent>> Update(
+    public static async Task<
+        Results<ValidationProblem, Ok<UpdateKanbanTaskResponse>>
+    > Update(
         [FromServices] UpdateKanbanTaskHandler handler,
         [FromServices] IValidator<UpdateKanbanTaskRequest> validator,
         [FromBody] UpdateKanbanTaskRequest command
@@ -67,9 +81,9 @@ public static class UpdateKanbanTaskEndpoint
             );
         }
 
-        await handler.Handle(command);
+        var updatedKanbanTask = await handler.Handle(command);
 
-        return TypedResults.NoContent();
+        return TypedResults.Ok(updatedKanbanTask);
     }
 }
 
@@ -77,7 +91,9 @@ public class UpdateKanbanTaskHandler(AppDbContext context)
 {
     private readonly AppDbContext _context = context;
 
-    public async Task Handle(UpdateKanbanTaskRequest command)
+    public async Task<UpdateKanbanTaskResponse> Handle(
+        UpdateKanbanTaskRequest command
+    )
     {
         var kanbantask =
             await _context
@@ -87,6 +103,7 @@ public class UpdateKanbanTaskHandler(AppDbContext context)
 
         kanbantask.Title = command.Title;
         kanbantask.Description = command.Description;
+        kanbantask.BoardColumnId = command.BoardColumnId;
 
         var incomingSubtasks = command
             .Subtasks.Where(s => s.Id > 0)
@@ -117,5 +134,11 @@ public class UpdateKanbanTaskHandler(AppDbContext context)
         }
 
         await _context.SaveChangesAsync();
+
+        return new UpdateKanbanTaskResponse
+        {
+            Id = kanbantask.Id,
+            BoardColumnId = kanbantask.BoardColumnId,
+        };
     }
 }

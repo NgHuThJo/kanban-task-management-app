@@ -120,16 +120,53 @@
   }
 }
 
+.dialog-close-group {
+  border-radius: 0.25rem;
+  opacity: 0.7;
+  transition: opacity 0.2s;
+
+  &:hover {
+    opacity: 1;
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow:
+      0 0 0 2px var(--c-bg-error),
+      0 0 0 4px var(--c-error);
+  }
+
+  &:disabled {
+    pointer-events: none;
+  }
+
+  & svg {
+    pointer-events: none;
+    flex-shrink: 0;
+  }
+
+  & svg:not([class*="size-"]) {
+    width: 1rem;
+    height: 1rem;
+  }
+}
+
 /* === DialogHeader === */
 .dialog-header {
   display: flex;
   flex-direction: column;
+  position: relative;
   gap: 0.5rem;
   text-align: center;
 
   @media (width >= 768px) {
     text-align: left;
   }
+}
+
+.dialog-header-row {
+  flex-direction: row;
+  justify-content: space-between;
 }
 
 /* === DialogFooter === */

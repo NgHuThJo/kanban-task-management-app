@@ -2,6 +2,11 @@
 
 import { z } from "zod";
 
+export const zChangeKanbanTaskStatusRequest = z.object({
+  id: z.number().int().gte(1).lte(2147483647),
+  boardColumnId: z.number().int().gte(1).lte(2147483647),
+});
+
 export const zCreateBoardColumnRequest = z.object({
   name: z.string().min(1).max(40).regex(/\S+/),
   boardId: z.number().int().gte(1).lte(2147483647),
@@ -31,20 +36,21 @@ export const zCreateSubtaskRequest = z.object({
 export const zCreateKanbanTaskRequest = z.object({
   title: z.string().min(1).max(40).regex(/\S+/),
   description: z.string(),
-  boardColumnId: z.number().int().gte(1).lte(2147483647).optional(),
+  boardColumnId: z.number().int().gte(1).lte(2147483647),
   subtasks: z.array(zCreateSubtaskRequest).optional(),
 });
 
 export const zCreateKanbanTaskResponse = z.object({
   id: z.number().int().gte(1).lte(2147483647),
+  boardColumnId: z.number().int().gte(1).lte(2147483647),
 });
 
 export const zDeleteBoardRequest = z.object({
-  id: z.number().int().gte(1).lte(2147483647).optional(),
+  id: z.number().int().gte(1).lte(2147483647),
 });
 
 export const zDeleteKanbanTaskRequest = z.object({
-  id: z.number().int().gte(1).lte(2147483647).optional(),
+  id: z.number().int().gte(1).lte(2147483647),
 });
 
 export const zGetBoardColumnsResponse = z.object({
@@ -55,7 +61,7 @@ export const zGetBoardColumnsResponse = z.object({
 export const zGetBoardsResponse = z.object({
   id: z.number().int().gte(1).lte(2147483647),
   name: z.string().min(1).max(40).regex(/\S+/),
-  boardColumns: z.array(zGetBoardColumnsResponse).optional(),
+  boardColumns: z.array(zGetBoardColumnsResponse),
 });
 
 export const zGetSubtasksResponse = z.object({
@@ -82,27 +88,37 @@ export const zHttpValidationProblemDetails = z.object({
   errors: z.object({}).optional(),
 });
 
+export const zToggleSubTaskStatusRequest = z.object({
+  id: z.number().int().gte(1).lte(2147483647),
+});
+
 export const zUpdateBoardColumnRequest = z.object({
-  id: z.number().int().gte(1).lte(2147483647).optional(),
+  id: z.number().int().gte(1).lte(2147483647),
   name: z.string().min(1).max(40).regex(/\S+/),
 });
 
 export const zUpdateBoardRequest = z.object({
-  id: z.number().int().gte(1).lte(2147483647).optional(),
+  id: z.number().int().gte(1).lte(2147483647),
   name: z.string().min(1).max(40).regex(/\S+/),
   boardColumns: z.array(zUpdateBoardColumnRequest).optional(),
 });
 
 export const zUpdateSubtaskRequest = z.object({
-  id: z.number().int().gte(1).lte(2147483647).optional(),
+  id: z.number().int().gte(0).lte(2147483647),
   description: z.string().min(1).max(40).regex(/\S+/),
 });
 
 export const zUpdateKanbanTaskRequest = z.object({
-  id: z.number().int().gte(1).lte(2147483647).optional(),
+  id: z.number().int().gte(1).lte(2147483647),
   title: z.string().min(1).max(40).regex(/\S+/),
   description: z.string(),
   subtasks: z.array(zUpdateSubtaskRequest).optional(),
+  boardColumnId: z.number().int().gte(1).lte(2147483647),
+});
+
+export const zUpdateKanbanTaskResponse = z.object({
+  id: z.number().int().gte(1).lte(2147483647),
+  boardColumnId: z.number().int().gte(1).lte(2147483647),
 });
 
 export const zDeleteApiBoardsData = z.object({
@@ -199,9 +215,21 @@ export const zPutApiKanbantasksData = z.object({
 });
 
 /**
+ * OK
+ */
+export const zPutApiKanbantasksResponse = zUpdateKanbanTaskResponse;
+
+export const zPutApiKanbantasksStatusData = z.object({
+  body: zChangeKanbanTaskStatusRequest,
+  headers: z.never().optional(),
+  path: z.never().optional(),
+  query: z.never().optional(),
+});
+
+/**
  * No Content
  */
-export const zPutApiKanbantasksResponse = z.void();
+export const zPutApiKanbantasksStatusResponse = z.void();
 
 export const zPostApiBoardcolumnsData = z.object({
   body: zCreateBoardColumnRequest,
@@ -214,3 +242,15 @@ export const zPostApiBoardcolumnsData = z.object({
  * Created
  */
 export const zPostApiBoardcolumnsResponse = zCreateBoardColumnResponse;
+
+export const zPostApiSubtasksData = z.object({
+  body: zToggleSubTaskStatusRequest,
+  headers: z.never().optional(),
+  path: z.never().optional(),
+  query: z.never().optional(),
+});
+
+/**
+ * No Content
+ */
+export const zPostApiSubtasksResponse = z.void();
