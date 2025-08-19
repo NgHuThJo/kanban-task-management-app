@@ -127,7 +127,6 @@ export function UpdateKanbanTaskForm({ task }: UpdateKanbantaskFormProps) {
     const convertedFormData = formDataToObject(formData);
     const title = convertedFormData["task-name"];
     const description = convertedFormData["description"];
-    // const subtasks = convertedFormData["subtask-column"];
 
     const subtasks = columns.map(({ realId, name }) => ({
       id: realId,
