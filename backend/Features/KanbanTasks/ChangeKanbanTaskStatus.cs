@@ -1,5 +1,4 @@
 using System.ComponentModel.DataAnnotations;
-using System.Security.AccessControl;
 using backend.Models;
 using FluentValidation;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -8,6 +7,15 @@ using Microsoft.AspNetCore.Mvc;
 namespace backend.Features.KanbanTasks;
 
 public record ChangeKanbanTaskStatusRequest
+{
+    [Range(1, int.MaxValue)]
+    public required int Id { get; init; }
+
+    [Range(1, int.MaxValue)]
+    public required int BoardColumnId { get; init; }
+}
+
+public record ChangeKanbanTaskStatusResponse
 {
     [Range(1, int.MaxValue)]
     public required int Id { get; init; }
@@ -29,7 +37,7 @@ public class ChangeKanbanTaskStatusValidator
 public static class ChangeKanbanTaskStatusEndpoint
 {
     public static async Task<
-        Results<ValidationProblem, NoContent>
+        Results<ValidationProblem, Ok<ChangeKanbanTaskStatusResponse>>
     > ChangeStatus(
         [FromServices] ChangeKanbanTaskStatusHandler handler,
         [FromServices] IValidator<ChangeKanbanTaskStatusRequest> validator,
@@ -45,9 +53,9 @@ public static class ChangeKanbanTaskStatusEndpoint
             );
         }
 
-        await handler.Handle(command);
+        var updatedKanbanTask = await handler.Handle(command);
 
-        return TypedResults.NoContent();
+        return TypedResults.Ok(updatedKanbanTask);
     }
 }
 
@@ -55,7 +63,9 @@ public class ChangeKanbanTaskStatusHandler(AppDbContext context)
 {
     private readonly AppDbContext _context = context;
 
-    public async Task Handle(ChangeKanbanTaskStatusRequest command)
+    public async Task<ChangeKanbanTaskStatusResponse> Handle(
+        ChangeKanbanTaskStatusRequest command
+    )
     {
         var kanbanTask =
             await _context.KanbanTasks.FindAsync(command.Id)
@@ -65,6 +75,10 @@ public class ChangeKanbanTaskStatusHandler(AppDbContext context)
 
         await _context.SaveChangesAsync();
 
-        return;
+        return new ChangeKanbanTaskStatusResponse
+        {
+            Id = kanbanTask.Id,
+            BoardColumnId = kanbanTask.BoardColumnId,
+        };
     }
 }

@@ -3,6 +3,7 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -64,7 +65,14 @@ export function KanbanTaskDialog({ task }: KanbantaskDialogProps) {
   });
   const { mutate: changeStatus } = useMutation({
     ...putApiKanbantasksStatusMutation(),
-    onSuccess: async () => {
+    onSuccess: async (data) => {
+      await queryClient.invalidateQueries({
+        queryKey: getApiKanbantasksOptions({
+          query: {
+            BoardColumnId: data.boardColumnId,
+          },
+        }).queryKey,
+      });
       await queryClient.invalidateQueries({
         queryKey: getApiKanbantasksOptions({
           query: {
@@ -152,6 +160,7 @@ export function KanbanTaskDialog({ task }: KanbantaskDialogProps) {
             </DialogClose>
           </div>
         </DialogHeader>
+        <DialogDescription>{task.description}</DialogDescription>
         <Form>
           <Label>{`Subtasks (${completedSubtasks} of ${subTaskLength})`}</Label>
           {task.subTasks?.map((subTask) => (

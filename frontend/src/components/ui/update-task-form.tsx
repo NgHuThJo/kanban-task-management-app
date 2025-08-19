@@ -127,33 +127,12 @@ export function UpdateKanbanTaskForm({ task }: UpdateKanbantaskFormProps) {
     const convertedFormData = formDataToObject(formData);
     const title = convertedFormData["task-name"];
     const description = convertedFormData["description"];
-    const subtasks = convertedFormData["subtask-column"];
+    // const subtasks = convertedFormData["subtask-column"];
 
-    const convertedSubtasks = Array.isArray(subtasks)
-      ? subtasks.map((encodedTask) => {
-          const taskString = encodedTask as string;
-          let splitString: [string, string];
-
-          splitString = taskString.split("-") as [string, string];
-
-          return {
-            id: Number(splitString[0]),
-            description: splitString[1],
-          };
-        })
-      : subtasks !== undefined
-        ? Array.from({ length: 1 }, () => {
-            const taskString = subtasks as string;
-            let splitString: [string, string];
-
-            splitString = taskString.split("-") as [string, string];
-
-            return {
-              id: Number(splitString[0]),
-              description: splitString[1],
-            };
-          })
-        : [];
+    const subtasks = columns.map(({ realId, name }) => ({
+      id: realId,
+      description: name,
+    }));
 
     const status = convertedFormData["status"];
 
@@ -161,15 +140,14 @@ export function UpdateKanbanTaskForm({ task }: UpdateKanbantaskFormProps) {
       title,
       description,
       id: task.id,
-      status: Number(status),
-      subtasks: convertedSubtasks,
+      boardColumnId: Number(status),
+      subtasks,
     };
 
     const validatedResult = zUpdateKanbanTaskRequest.safeParse(payload);
 
     if (!validatedResult.success) {
       const formattedErrors = makeZodErrorsUserFriendly(validatedResult.error);
-
       console.log("Form errors", formattedErrors);
     } else {
       mutate({
@@ -204,11 +182,11 @@ export function UpdateKanbanTaskForm({ task }: UpdateKanbantaskFormProps) {
         </FormMessage>
       </FormField>
       <Label>Subtasks</Label>
-      {columns.map(({ id, realId, name }, index) => (
+      {columns.map(({ id, name }, index) => (
         <div key={id}>
           <FormField variant="group" name="subtask-column">
             <FormControl
-              value={`${realId}-${name}`}
+              value={`${name}`}
               placeholder="e.g. Make coffee"
               onChange={(event) => {
                 handleChangeColumnName(event, id);

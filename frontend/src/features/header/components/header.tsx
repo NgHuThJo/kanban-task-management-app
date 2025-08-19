@@ -37,7 +37,7 @@ export function Header() {
           </Button>
         ) : null}
         <CreateKanbanTaskDialog isMobile={isMobile} />
-        <EditBoardPopover />
+        {currentElement ? <EditBoardPopover /> : null}
       </header>
     </>
   );

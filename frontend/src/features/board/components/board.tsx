@@ -4,11 +4,7 @@ import {
 } from "#frontend/types/generated/@tanstack/react-query.gen";
 import { useSuspenseQueries, useSuspenseQuery } from "@tanstack/react-query";
 import { useCurrentBoardId } from "#frontend/store/board";
-import type {
-  GetBoardColumnsResponse,
-  GetBoardsResponse,
-  GetKanbanTasksResponse,
-} from "#frontend/types/generated";
+import type { GetKanbanTasksResponse } from "#frontend/types/generated";
 import { ScrollArea } from "#frontend/components/primitives/scroll-area";
 import styles from "./board.module.css";
 
@@ -21,8 +17,8 @@ export function Board() {
 
   const currentBoard = boards
     .filter((board) => currentBoardId === board.id)
-    .at(-1) as GetBoardsResponse;
-  const boardColumns = currentBoard.boardColumns as GetBoardColumnsResponse[];
+    .at(-1);
+  const boardColumns = currentBoard?.boardColumns ?? [];
 
   const kanbanTasks = useSuspenseQueries({
     queries: boardColumns.map((column) =>
@@ -38,6 +34,10 @@ export function Board() {
       };
     },
   });
+
+  if (!currentBoardId) {
+    return <p>No board.</p>;
+  }
 
   const columnTaskDict = boardColumns.reduce(
     (prev, curr) => {

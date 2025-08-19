@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useCurrentBoardId } from "#frontend/store/board";
+import { useBoardStore, useCurrentBoardId } from "#frontend/store/board";
 import {
   deleteApiBoardsMutation,
   getApiBoardsOptions,
@@ -20,12 +20,33 @@ import styles from "./delete-board-dialog.module.css";
 export function DeleteBoardDialog() {
   const queryClient = useQueryClient();
   const currentBoardId = useCurrentBoardId();
+  const setCurrentBoardId = useBoardStore((state) => state.setCurrentBoardId);
   const { mutate } = useMutation({
     ...deleteApiBoardsMutation(),
+    onMutate: async (payload) => {
+      const deletedBoardId = payload.body.id;
+
+      await queryClient.cancelQueries({
+        queryKey: getApiBoardsOptions().queryKey,
+      });
+
+      const previousBoardData = queryClient.getQueryData(
+        getApiBoardsOptions().queryKey,
+      );
+
+      queryClient.setQueryData(getApiBoardsOptions().queryKey, (oldData) =>
+        oldData?.filter((board) => board.id !== deletedBoardId),
+      );
+
+      return { previousBoardData };
+    },
     onSuccess: async () => {
       await queryClient.invalidateQueries({
         queryKey: getApiBoardsOptions().queryKey,
       });
+
+      const boards = queryClient.getQueryData(getApiBoardsOptions().queryKey);
+      setCurrentBoardId(boards?.at(0)?.id ?? 0);
     },
   });
 
@@ -61,7 +82,9 @@ export function DeleteBoardDialog() {
           remove all columns and tasks and cannot be reversed.
         </DialogDescription>
         <div className={styles["button-group"]}>
-          <Button intent="destructive">Delete</Button>
+          <Button onClick={handleDelete} intent="destructive">
+            Delete
+          </Button>
           <DialogClose variant="cancel" asChild>
             <Button variant="cancel">Cancel</Button>
           </DialogClose>

@@ -7,6 +7,8 @@ import {
 import { UpdateKanbantaskDialog } from "#frontend/components/ui/update-task-dialog";
 import { VerticalEllipsis } from "#frontend/components/ui/icon";
 import type { GetKanbanTasksResponse } from "#frontend/types/generated";
+import { DeleteBoardDialog } from "#frontend/components/ui/delete-board-dialog";
+import { DeleteKanbantaskDialog } from "#frontend/components/ui/delete-task-dialog";
 
 type EditKanbantaskPopoverProps = {
   task: GetKanbanTasksResponse;
@@ -22,6 +24,7 @@ export function EditKanbanTaskPopover({ task }: EditKanbantaskPopoverProps) {
       </PopoverTrigger>
       <PopoverContent align="end" sideOffset={16}>
         <UpdateKanbantaskDialog task={task} />
+        <DeleteKanbantaskDialog task={task} />
       </PopoverContent>
     </Popover>
   );
