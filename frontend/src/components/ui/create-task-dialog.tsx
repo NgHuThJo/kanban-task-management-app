@@ -18,7 +18,13 @@ export function CreateKanbanTaskDialog({ isMobile }: CreateTaskDialogProps) {
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button type="button">{isMobile ? "+" : "+ Create New Task"}</Button>
+        <Button
+          style={{
+            marginLeft: "auto",
+          }}
+        >
+          {isMobile ? "+" : "+ Create New Task"}
+        </Button>
       </DialogTrigger>
       <DialogContent aria-describedby="Create new task" showCloseButton={false}>
         <DialogTitle>Add New Task</DialogTitle>

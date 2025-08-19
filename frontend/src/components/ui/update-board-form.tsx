@@ -1,5 +1,9 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
+import {
+  useQueryClient,
+  useMutation,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { Cross } from "#frontend/components/ui/icon";
 import {
   getApiBoardsOptions,
@@ -9,7 +13,6 @@ import { zUpdateBoardRequest } from "#frontend/types/generated/zod.gen";
 import { formDataToObject } from "#frontend/utils/object";
 import type { CreateBoardRequest } from "#frontend/types/generated";
 import { makeZodErrorsUserFriendly } from "#frontend/utils/zod";
-import type { Column } from "#frontend/types/custom/custom";
 import { Button } from "#frontend/components/primitives/button";
 import {
   Form,
@@ -20,12 +23,29 @@ import {
   FormSubmit,
   Label,
 } from "#frontend/components/primitives/form";
+import { useCurrentBoardId } from "#frontend/store/board";
 
 export function UpdateBoardForm() {
+  const currentBoardId = useCurrentBoardId();
   const [validationErrors, setValidationErrors] = useState<ReturnType<
     typeof makeZodErrorsUserFriendly<CreateBoardRequest>
   > | null>(null);
-  const [columns, setColumns] = useState<Column[]>([]);
+  const { data: boardData } = useSuspenseQuery(getApiBoardsOptions());
+
+  const currentBoard = boardData.filter(
+    (board) => board.id == currentBoardId,
+  )?.[0];
+
+  const [columns, setColumns] = useState(() => {
+    const currentBoardColumns =
+      currentBoard?.boardColumns?.map(({ id, name }) => ({
+        id: crypto.randomUUID(),
+        realId: id,
+        name,
+      })) ?? [];
+
+    return currentBoardColumns;
+  });
   const queryClient = useQueryClient();
 
   const { isPending, mutate } = useMutation({
@@ -42,7 +62,10 @@ export function UpdateBoardForm() {
   }
 
   const handleAddColumn = () => {
-    setColumns((prev) => [...prev, { id: crypto.randomUUID(), name: "" }]);
+    setColumns((prev) => [
+      ...prev,
+      { id: crypto.randomUUID(), realId: 0, name: "" },
+    ]);
   };
 
   const handleDeleteColumn = (columnId: string, index: number) => {
@@ -103,7 +126,7 @@ export function UpdateBoardForm() {
 
   return (
     <Form onSubmit={handleUpdateBoard}>
-      <FormField name="board-name">
+      <FormField name="board-name" defaultValue={currentBoard?.name}>
         <FormLabel>Board Name</FormLabel>
         <FormControl required />
         <FormMessage match="valueMissing">

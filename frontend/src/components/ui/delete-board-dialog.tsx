@@ -16,8 +16,10 @@ import {
 import { Button } from "#frontend/components/primitives/button";
 import { Cross } from "#frontend/components/ui/icon";
 import styles from "./delete-board-dialog.module.css";
+import { useState } from "react";
 
 export function DeleteBoardDialog() {
+  const [open, setOpen] = useState(false);
   const queryClient = useQueryClient();
   const currentBoardId = useCurrentBoardId();
   const setCurrentBoardId = useBoardStore((state) => state.setCurrentBoardId);
@@ -41,12 +43,18 @@ export function DeleteBoardDialog() {
       return { previousBoardData };
     },
     onSuccess: async () => {
-      await queryClient.invalidateQueries({
-        queryKey: getApiBoardsOptions().queryKey,
+      const boards = await queryClient.fetchQuery({
+        ...getApiBoardsOptions(),
+        staleTime: 0,
       });
-
-      const boards = queryClient.getQueryData(getApiBoardsOptions().queryKey);
       setCurrentBoardId(boards?.at(0)?.id ?? 0);
+      setOpen(false);
+    },
+    onError: (_error, _payload, context) => {
+      queryClient.setQueryData(
+        getApiBoardsOptions().queryKey,
+        context?.previousBoardData,
+      );
     },
   });
 
@@ -69,7 +77,7 @@ export function DeleteBoardDialog() {
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button variant="link" intent="destructive" type="button">
           Delete board
