@@ -1,20 +1,14 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { useCurrentBoardId } from "#frontend/store/board";
-import { Button } from "#frontend/components/primitives/button";
 import { getApiBoardsOptions } from "#frontend/types/generated/@tanstack/react-query.gen";
-import {
-  ChevronDown,
-  ChevronUp,
-  LogoMobile,
-} from "#frontend/components/ui/icon";
+import { Logo, LogoMobile } from "#frontend/components/ui/icon";
 import styles from "./header.module.css";
-import { useToggle } from "#frontend/hooks/use-toggle";
 import { useMediaQuery } from "#frontend/hooks/use-media-query";
 import { CreateKanbanTaskDialog } from "#frontend/components/ui/create-task-dialog";
 import { EditBoardPopover } from "#frontend/components/ui/edit-board-popover";
+import { SidebarDialog } from "#frontend/components/ui/sidebar-dialog";
 
 export function Header() {
-  const { isOpen: isLeftDialogOpen, toggle: toggleLeftDialog } = useToggle();
   const { isMatch: isMobile } = useMediaQuery("(width < 768px)");
   const { data } = useSuspenseQuery(getApiBoardsOptions());
   const currentBoardId = useCurrentBoardId();
@@ -24,20 +18,19 @@ export function Header() {
   return (
     <>
       <header className={styles.layout}>
-        <LogoMobile className={styles.logo} />
-        <h1 className={styles.name}>{currentElement?.name ?? "No Board"}</h1>
-        {isMobile ? (
-          <Button
-            variant="ghost"
-            size="icon"
-            type="button"
-            onClick={toggleLeftDialog}
-          >
-            {isLeftDialogOpen ? <ChevronUp /> : <ChevronDown />}
-          </Button>
-        ) : null}
-        <CreateKanbanTaskDialog isMobile={isMobile} />
-        {currentElement ? <EditBoardPopover /> : null}
+        <div className={styles["header-left"]}>
+          {isMobile ? (
+            <LogoMobile className={styles.logo} />
+          ) : (
+            <Logo className={styles["desktop-logo"]} />
+          )}
+        </div>
+        <div className={styles["header-right"]}>
+          <h1 className={styles.name}>{currentElement?.name ?? "No Board"}</h1>
+          {isMobile ? <SidebarDialog /> : null}
+          <CreateKanbanTaskDialog isMobile={isMobile} />
+          {currentElement ? <EditBoardPopover /> : null}
+        </div>
       </header>
     </>
   );

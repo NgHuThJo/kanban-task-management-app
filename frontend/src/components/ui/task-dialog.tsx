@@ -140,7 +140,7 @@ export function KanbanTaskDialog({ task }: KanbantaskDialogProps) {
               {`${
                 task.subTasks?.filter((subtask) => subtask.isCompleted).length
               }
-                    of ${task.subTasks?.length}`}
+                    of ${task.subTasks?.length} subtasks`}
             </p>
           </CardContent>
         </Card>

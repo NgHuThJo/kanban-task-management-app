@@ -12,14 +12,18 @@
   }
 
   > div {
-    grid-area: content-start / content-start / content-end / content-end;
+    grid-area: content-start / sidebar-start / content-end / content-end;
   }
 
   @media (width >= 768px) {
-    aside {
-      display: revert;
+    > aside {
+      display: grid;
       grid-row: header-end/ content-end;
       grid-column: sidebar-start / sidebar-end;
+    }
+
+    > div {
+      grid-area: content-start / content-start / content-end / content-end;
     }
   }
 }

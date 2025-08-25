@@ -3,7 +3,6 @@
   display: grid;
   gap: var(--spacing-6);
   border-radius: 0.75rem;
-  border: 1px solid;
   padding: var(--spacing-6);
   box-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
 }
@@ -45,6 +44,7 @@
 
 .card-content {
   display: grid;
+  gap: var(--spacing-2);
 }
 
 .card-footer {

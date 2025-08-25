@@ -12,6 +12,7 @@ const buttonVariants = cva(styles.button, {
       link: styles.link,
       cancel: styles.cancel,
       select: styles.select,
+      sidebar: styles.sidebar,
     },
     size: {
       default: styles["default-size"],
@@ -19,10 +20,13 @@ const buttonVariants = cva(styles.button, {
       lg: styles.lg,
       icon: styles.icon,
       select: styles["select-size"],
+      sidebar: styles["sidebar-size"],
     },
     intent: {
       default: "",
       destructive: "",
+      create: "",
+      active: "",
     },
   },
   defaultVariants: {
@@ -40,6 +44,16 @@ const buttonVariants = cva(styles.button, {
       variant: "link",
       intent: "destructive",
       className: styles["destructive-link"],
+    },
+    {
+      variant: "sidebar",
+      intent: "create",
+      className: styles["create-sidebar"],
+    },
+    {
+      variant: "sidebar",
+      intent: "active",
+      className: styles["active-sidebar"],
     },
   ],
 });

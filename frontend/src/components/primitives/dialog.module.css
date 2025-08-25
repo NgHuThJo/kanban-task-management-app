@@ -42,13 +42,38 @@
   z-index: 50;
   display: grid;
   width: 100%;
-  max-width: calc(100% - 2rem);
+  max-width: min(40rem, calc(100% - 2rem));
   gap: 1.5rem;
   border-radius: 0.5rem;
   border: 1px solid #ccc;
   padding: 2rem;
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
   transition-duration: 200ms;
+
+  @media (width >= 768px) {
+    max-width: 32rem;
+  }
+
+  &[data-state="open"] {
+    animation: zoomIn 200ms ease-out;
+  }
+
+  &[data-state="closed"] {
+    animation: zoomOut 200ms ease-in;
+  }
+}
+
+.dialog-sidebar {
+  display: grid;
+  gap: 2rem;
+  padding-block: var(--spacing-8);
+  border-radius: 1rem;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 50;
+  background-color: var(--c-bg-secondary);
+  transform: translate(-50%, -50%);
 
   @media (width >= 768px) {
     max-width: 32rem;
@@ -190,6 +215,11 @@
 }
 
 .destructive-dialog-title {
+  color: var(--c-bg-error);
+}
+
+.sidebar-dialog-title {
+  padding-inline: var(--padding-inline);
   color: var(--c-bg-error);
 }
 

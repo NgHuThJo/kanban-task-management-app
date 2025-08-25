@@ -1,10 +1,31 @@
 .layout {
-  display: flex;
-  gap: 1rem;
-  align-items: center;
-  padding: 1rem;
+  --outer-padding: var(--spacing-4);
+
+  display: grid;
+  grid-template-columns: subgrid;
   position: relative;
   background-color: var(--c-bg-secondary);
+}
+
+.header-left {
+  display: grid;
+  align-items: center;
+  padding: var(--outer-padding);
+
+  @media (width >= 768px) {
+    border-right: 1px solid var(--c-border);
+  }
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: var(--outer-padding);
+
+  @media (width >= 768px) {
+    border-bottom: 1px solid var(--c-border);
+  }
 }
 
 .edit {
@@ -17,6 +38,14 @@
 
 .logo {
   width: 2rem;
+}
+
+.desktop-logo {
+  height: 1.5rem;
+
+  path {
+    fill: var(--c-heading);
+  }
 }
 
 .name {

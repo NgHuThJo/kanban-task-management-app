@@ -9,13 +9,18 @@ import {
 
 import { CreateBoardForm } from "#frontend/components/ui/create-board-form";
 import { Cross } from "#frontend/components/ui/icon";
+import type { ReactNode } from "react";
 
-export function CreateBoardDialog() {
+type CreateBoardDialogProps = {
+  trigger: ReactNode;
+};
+
+export function CreateBoardDialog({
+  trigger = <Button>+Create New Board</Button>,
+}: CreateBoardDialogProps) {
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button>+ Create New Board</Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent
         aria-describedby="Create new board"
         showCloseButton={false}

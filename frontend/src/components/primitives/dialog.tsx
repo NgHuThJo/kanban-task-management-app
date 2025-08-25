@@ -10,6 +10,19 @@ const dialogTitleVariants = cva(styles["dialog-title"], {
     variant: {
       default: "",
       destructive: styles["destructive-dialog-title"],
+      sidebar: styles["sidebar-dialog-title"],
+    },
+  },
+  defaultVariants: {
+    variant: "default",
+  },
+});
+
+const dialogContentVariants = cva("", {
+  variants: {
+    variant: {
+      default: styles["dialog-content"],
+      sidebar: styles["dialog-sidebar"],
     },
   },
   defaultVariants: {
@@ -91,17 +104,18 @@ function DialogOverlay({
 function DialogContent({
   className,
   children,
+  variant,
   showCloseButton = true,
   ...props
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   showCloseButton?: boolean;
-}) {
+} & VariantProps<typeof dialogContentVariants>) {
   return (
     <DialogPortal data-slot="dialog-portal">
       <DialogOverlay />
       <DialogPrimitive.Content
         data-slot="dialog-content"
-        className={cn(styles["dialog-content"], className)}
+        className={dialogContentVariants({ variant, className })}
         {...props}
       >
         {children}

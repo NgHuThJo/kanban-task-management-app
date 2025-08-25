@@ -1,12 +1,14 @@
 .layout {
   display: grid;
   grid-auto-flow: column;
-  gap: var(--spacing-4);
+  grid-auto-columns: 20rem;
+  gap: var(--spacing-8);
 }
 
-.card {
+.column {
   display: grid;
-  gap: var(--spacing-2);
-  padding: var(--spacing-4);
-  background-color: var(--c-bg-secondary);
+  gap: var(--spacing-4);
+  padding: 1rem;
+  border: 1px dashed var(--c-border);
+  border-radius: 1rem;
 }

@@ -1,13 +1,13 @@
 .layout {
   display: grid;
   gap: 1.5rem;
+  justify-items: center;
   align-items: center;
   place-content: center;
   grid-template-columns: auto 1fr auto;
   padding: 1rem;
-  border-top-right-radius: 3rem;
-  border-bottom-right-radius: 3rem;
-  background-color: var(--c-bg-tertiary);
+  border-radius: 1rem;
+  background-color: var(--c-bg-primary);
 
   svg {
     width: 1.5rem;
@@ -17,6 +17,7 @@
 .switch {
   display: grid;
   align-items: center;
+  width: 4rem;
   padding: 0.25rem 1rem;
   background-color: var(--c-primary);
   border-radius: 10rem;

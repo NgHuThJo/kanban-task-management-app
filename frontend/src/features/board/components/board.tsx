@@ -59,8 +59,8 @@ export function Board() {
     <ScrollArea>
       <div className={styles.layout}>
         {currentBoard.boardColumns?.map((column) => (
-          <div>
-            <h2>{column.name}</h2>
+          <div className={styles.column} key={column.id}>
+            <h2>{`${column.name} (${columnTaskDict[column.name]?.length ?? 0})`}</h2>
             {columnTaskDict?.[column.name]?.map((task) => (
               <KanbanTaskDialog task={task} />
             ))}

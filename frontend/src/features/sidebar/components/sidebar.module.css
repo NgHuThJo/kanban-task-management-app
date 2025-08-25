@@ -1,6 +1,9 @@
 .layout {
-  padding-top: 1rem;
+  display: grid;
+  grid-template-rows: 1fr auto;
+  padding-block: 1rem 2rem;
   padding-right: 1rem;
+  border-right: 1px solid var(--c-border);
   background-color: var(--c-bg-secondary);
 }
 
@@ -8,48 +11,6 @@
   padding: 1.5rem 1.5rem 1.5rem 1rem;
 }
 
-.list-item {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  justify-items: start;
-  align-items: center;
-  gap: 1rem;
-  width: 100%;
-  padding: 0.75rem;
-  border-top-right-radius: 3rem;
-  border-bottom-right-radius: 3rem;
-  background-color: var(--c-primary);
-
-  svg {
-    width: 1rem;
-  }
-
-  &:hover {
-    background-color: var(--c-secondary);
-  }
-}
-
-.create-item {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  justify-items: start;
-  align-items: center;
-  gap: 1rem;
-  width: 100%;
-  padding: 0.75rem;
-  border-top-right-radius: 3rem;
-  border-bottom-right-radius: 3rem;
-  color: var(--c-primary);
-
-  svg {
-    width: 1rem;
-
-    path {
-      fill: var(--c-primary);
-    }
-  }
-
-  &:hover {
-    background-color: var(--c-secondary);
-  }
+.theme {
+  padding-inline-start: 1.5rem;
 }

@@ -8,7 +8,7 @@
 }
 
 .progress-indicator {
-  background-color: var(--c-bg-secondary);
+  background-color: var(--c-heading);
   height: 100%;
   width: 100%;
   flex: 1 1 0%;
