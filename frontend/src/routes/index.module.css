@@ -1,18 +1,22 @@
 .layout {
   display: grid;
   grid-template-rows: [header-start] auto [header-end content-start] 1fr [content-end];
-  grid-template-columns: [sidebar-start] auto [sidebar-end content-start] 1fr [content-end];
+  grid-template-columns: [sidebar-start] auto [sidebar-end content-start] 1fr [content-end overflow-start] 1fr [overflow-end];
 
   > aside {
     display: none;
   }
 
   > header {
-    grid-column: sidebar-start / content-end;
+    grid-column: sidebar-start / overwflow-end;
+
+    > div:last-child {
+      grid-column: span 2;
+    }
   }
 
   > div {
-    grid-area: content-start / sidebar-start / content-end / content-end;
+    grid-area: content-start / sidebar-start / content-end / overflow-end;
   }
 
   @media (width >= 768px) {
@@ -23,7 +27,7 @@
     }
 
     > div {
-      grid-area: content-start / content-start / content-end / content-end;
+      grid-area: content-start / content-start / content-end / overflow-end;
     }
   }
 }
