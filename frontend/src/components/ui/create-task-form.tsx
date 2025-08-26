@@ -203,7 +203,13 @@ export function CreateTaskForm() {
               {boardColumnNames.map((columnName) => (
                 <SelectItem value={columnName}>{columnName}</SelectItem>
               ))}
-              <CreateBoardColumnDialog triggerButtonText="+ Add New Column" />
+              <CreateBoardColumnDialog
+                trigger={
+                  <Button variant="select" size="select">
+                    "+ Add New Column"
+                  </Button>
+                }
+              />
             </SelectContent>
           </Select>
         </FormControl>

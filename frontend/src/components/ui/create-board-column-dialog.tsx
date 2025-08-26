@@ -14,7 +14,7 @@ import {
   DialogClose,
 } from "#frontend/components/primitives/dialog";
 import { Cross } from "#frontend/components/ui/icon";
-import type { FormEvent } from "react";
+import type { FormEvent, ReactNode } from "react";
 import {
   getApiBoardsOptions,
   postApiBoardcolumnsMutation,
@@ -26,11 +26,11 @@ import { zCreateBoardColumnRequest } from "#frontend/types/generated/zod.gen";
 import { makeZodErrorsUserFriendly } from "#frontend/utils/zod";
 
 type CreateBoardColumnDialogProps = {
-  triggerButtonText: string;
+  trigger: ReactNode;
 };
 
 export function CreateBoardColumnDialog({
-  triggerButtonText,
+  trigger = <Button>+New Column</Button>,
 }: CreateBoardColumnDialogProps) {
   const currentBoardId = useCurrentBoardId();
   const queryClient = useQueryClient();
@@ -75,11 +75,7 @@ export function CreateBoardColumnDialog({
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Button variant="select" size="select">
-          {triggerButtonText}
-        </Button>
-      </DialogTrigger>
+      <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent aria-describedby="" showCloseButton={false}>
         <DialogTitle>Add New Column</DialogTitle>
         <Form onSubmit={handleSubmit}>

@@ -10,6 +10,7 @@ import styles from "./board.module.css";
 
 import { CreateBoardColumnDialog } from "#frontend/components/ui/create-board-column-dialog";
 import { KanbanTaskDialog } from "#frontend/components/ui/task-dialog";
+import { Button } from "#frontend/components/primitives/button";
 
 export function Board() {
   const currentBoardId = useCurrentBoardId();
@@ -59,17 +60,18 @@ export function Board() {
     <ScrollArea>
       <div className={styles.layout}>
         {currentBoard.boardColumns?.map((column) => (
-          <div className={styles.column} key={column.id}>
+          <div className={styles.container}>
             <h2>{`${column.name} (${columnTaskDict[column.name]?.length ?? 0})`}</h2>
-            {columnTaskDict?.[column.name]?.map((task) => (
-              <KanbanTaskDialog task={task} />
-            ))}
+            <div className={styles.column} key={column.id}>
+              {columnTaskDict?.[column.name]?.map((task) => (
+                <KanbanTaskDialog task={task} />
+              ))}
+            </div>
           </div>
         ))}
-        <CreateBoardColumnDialog triggerButtonText="+ New Column" />
-        {/* <Button variant="ghost" size="lg">
-          +New Column
-        </Button> */}
+        <CreateBoardColumnDialog
+          trigger={<Button size="board">+ Add New Column</Button>}
+        />
       </div>
     </ScrollArea>
   ) : null;

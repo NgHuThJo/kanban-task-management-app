@@ -3,12 +3,20 @@
   grid-auto-flow: column;
   grid-auto-columns: 20rem;
   gap: var(--spacing-8);
+  min-height: 100%;
 }
 
 .column {
   display: grid;
+  grid-template-rows: repeat(auto-fit, minmax(0, min-content));
   gap: var(--spacing-4);
   padding: 1rem;
   border: 1px dashed var(--c-border);
   border-radius: 1rem;
+}
+
+.container {
+  display: grid;
+  grid-template-rows: minmax(0, min-content) 1fr;
+  gap: 1.5rem;
 }

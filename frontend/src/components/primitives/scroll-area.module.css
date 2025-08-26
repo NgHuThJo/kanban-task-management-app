@@ -10,6 +10,10 @@
   transition-property: color, box-shadow;
   outline: none;
 
+  > div {
+    height: 100%;
+  }
+
   &:focus-visible {
     outline-width: 1px;
     box-shadow: 0 0 0 3px rgba(var(--ring), 0.5);

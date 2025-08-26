@@ -192,7 +192,13 @@ export function KanbanTaskDialog({ task }: KanbantaskDialogProps) {
                       {columnName.name}
                     </SelectItem>
                   ))}
-                  <CreateBoardColumnDialog triggerButtonText="+ Add New Column" />
+                  <CreateBoardColumnDialog
+                    trigger={
+                      <Button variant="select" size="select">
+                        "+ Add New Column"
+                      </Button>
+                    }
+                  />
                 </SelectContent>
               </Select>
             </FormControl>

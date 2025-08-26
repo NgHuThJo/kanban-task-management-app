@@ -21,6 +21,7 @@ const buttonVariants = cva(styles.button, {
       icon: styles.icon,
       select: styles["select-size"],
       sidebar: styles["sidebar-size"],
+      board: styles["board-size"],
     },
     intent: {
       default: "",
