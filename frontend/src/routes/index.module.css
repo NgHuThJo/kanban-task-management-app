@@ -1,14 +1,15 @@
 .layout {
   display: grid;
-  grid-template-rows: [header-start] auto [header-end content-start] 1fr [content-end];
-  grid-template-columns: [sidebar-start] auto [sidebar-end content-start] 1fr [content-end overflow-start] 1fr [overflow-end];
+  height: 100vh;
+  grid-template-rows: [header-start] auto [header-end content-start] auto [content-end overflow-start] 1fr [overflow-end];
+  grid-template-columns: [sidebar-start] auto [sidebar-end content-start] auto [content-end overflow-start] 1fr [overflow-end];
 
   > aside {
     display: none;
   }
 
   > header {
-    grid-column: sidebar-start / overwflow-end;
+    grid-column: sidebar-start / overflow-end;
 
     > div:last-child {
       grid-column: span 2;
@@ -16,18 +17,18 @@
   }
 
   > div {
-    grid-area: content-start / sidebar-start / content-end / overflow-end;
+    grid-area: content-start / sidebar-start / overflow-end / overflow-end;
   }
 
   @media (width >= 768px) {
     > aside {
       display: grid;
-      grid-row: header-end/ content-end;
+      grid-row: content-start/ overflow-end;
       grid-column: sidebar-start / sidebar-end;
     }
 
     > div {
-      grid-area: content-start / content-start / content-end / overflow-end;
+      grid-area: content-start / content-start / overflow-end / overflow-end;
     }
   }
 }
