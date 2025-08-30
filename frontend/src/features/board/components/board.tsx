@@ -48,7 +48,13 @@ export function Board() {
           .filter((taskList) =>
             taskList.every((task) => task.boardColumnId == curr.id),
           )
-          .flatMap((task) => task),
+          .flatMap((task) => {
+            task.forEach((task) => {
+              task.subTasks?.sort((a, b) => a.id - b.id);
+            });
+
+            return task;
+          }),
       };
     },
     {} as {
