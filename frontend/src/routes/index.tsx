@@ -22,7 +22,7 @@ function Index() {
       <main className={styles.layout}>
         <Header />
         <Sidebar />
-        <Suspense fallback={<p>Loading...</p>}>
+        <Suspense fallback={<p className={styles.loading}>Loading...</p>}>
           <Board />
         </Suspense>
       </main>

@@ -2,6 +2,11 @@
 
 import { z } from "zod";
 
+export const zChangeBoardColumnRequest = z.object({
+  id: z.number().int().gte(1).lte(2147483647),
+  boardColumnId: z.number().int().gte(1).lte(2147483647),
+});
+
 export const zChangeKanbanTaskStatusRequest = z.object({
   id: z.number().int().gte(1).lte(2147483647),
   boardColumnId: z.number().int().gte(1).lte(2147483647),
@@ -235,6 +240,18 @@ export const zPutApiKanbantasksStatusData = z.object({
  * OK
  */
 export const zPutApiKanbantasksStatusResponse = zChangeKanbanTaskStatusResponse;
+
+export const zPutApiKanbantasksColumnData = z.object({
+  body: zChangeBoardColumnRequest,
+  headers: z.never().optional(),
+  path: z.never().optional(),
+  query: z.never().optional(),
+});
+
+/**
+ * No Content
+ */
+export const zPutApiKanbantasksColumnResponse = z.void();
 
 export const zPostApiBoardcolumnsData = z.object({
   body: zCreateBoardColumnRequest,

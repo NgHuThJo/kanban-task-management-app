@@ -44,12 +44,14 @@ import {
 import { useCurrentBoardId } from "#frontend/store/board";
 import { SelectItem } from "#frontend/components/primitives/select";
 import { EditKanbanTaskPopover } from "#frontend/components/ui/edit-task-popover";
+import type { RefObject } from "react";
 
 type KanbantaskDialogProps = {
   task: GetKanbanTasksResponse;
+  isDragging: RefObject<boolean>;
 };
 
-export function KanbanTaskDialog({ task }: KanbantaskDialogProps) {
+export function KanbanTaskDialog({ task, isDragging }: KanbantaskDialogProps) {
   const queryClient = useQueryClient();
   const { mutate: toggleSubtask } = useMutation({
     ...postApiSubtasksMutation(),
@@ -124,8 +126,15 @@ export function KanbanTaskDialog({ task }: KanbantaskDialogProps) {
 
   return (
     <Dialog>
-      <DialogTrigger asChild>
-        <Card>
+      <DialogTrigger
+        asChild
+        onClick={(event) => {
+          if (isDragging.current) {
+            event.preventDefault();
+          }
+        }}
+      >
+        <Card data-task-id={task.id}>
           <CardTitle>{task.title}</CardTitle>
           <CardContent>
             <Progress

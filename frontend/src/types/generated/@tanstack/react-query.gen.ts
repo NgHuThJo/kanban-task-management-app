@@ -11,6 +11,7 @@ import {
   postApiKanbantasks,
   putApiKanbantasks,
   putApiKanbantasksStatus,
+  putApiKanbantasksColumn,
   postApiBoardcolumns,
   postApiSubtasks,
 } from "../sdk.gen";
@@ -39,6 +40,9 @@ import type {
   PutApiKanbantasksStatusData,
   PutApiKanbantasksStatusError,
   PutApiKanbantasksStatusResponse,
+  PutApiKanbantasksColumnData,
+  PutApiKanbantasksColumnError,
+  PutApiKanbantasksColumnResponse,
   PostApiBoardcolumnsData,
   PostApiBoardcolumnsError,
   PostApiBoardcolumnsResponse,
@@ -318,6 +322,30 @@ export const putApiKanbantasksStatusMutation = (
   > = {
     mutationFn: async (localOptions) => {
       const { data } = await putApiKanbantasksStatus({
+        ...options,
+        ...localOptions,
+        throwOnError: true,
+      });
+      return data;
+    },
+  };
+  return mutationOptions;
+};
+
+export const putApiKanbantasksColumnMutation = (
+  options?: Partial<Options<PutApiKanbantasksColumnData>>,
+): UseMutationOptions<
+  PutApiKanbantasksColumnResponse,
+  PutApiKanbantasksColumnError,
+  Options<PutApiKanbantasksColumnData>
+> => {
+  const mutationOptions: UseMutationOptions<
+    PutApiKanbantasksColumnResponse,
+    PutApiKanbantasksColumnError,
+    Options<PutApiKanbantasksColumnData>
+  > = {
+    mutationFn: async (localOptions) => {
+      const { data } = await putApiKanbantasksColumn({
         ...options,
         ...localOptions,
         throwOnError: true,

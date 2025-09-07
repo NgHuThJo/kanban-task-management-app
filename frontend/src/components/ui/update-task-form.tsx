@@ -238,7 +238,7 @@ export function UpdateKanbanTaskForm({ task }: UpdateKanbantaskFormProps) {
       </FormField>
       <FormSubmit asChild>
         <Button variant="default" size="sm" type="submit">
-          Create New Task
+          Edit Task
         </Button>
       </FormSubmit>
     </Form>

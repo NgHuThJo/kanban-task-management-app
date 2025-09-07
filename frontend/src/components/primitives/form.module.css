@@ -20,7 +20,7 @@
   grid-template-columns: auto 1fr;
   padding-inline: var(--spacing-3);
   border-radius: 0.25rem;
-  background-color: var(--c-bg-tertiary);
+  background-color: var(--c-bg-cancel);
 }
 
 .form-message {

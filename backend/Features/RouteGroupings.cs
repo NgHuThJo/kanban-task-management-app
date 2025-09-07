@@ -34,6 +34,7 @@ public static class RouteGrouper
         group.MapPut("/", UpdateKanbanTaskEndpoint.Update);
         group.MapDelete("/", DeleteKanbanTaskEndpoint.Delete);
         group.MapPut("/status", ChangeKanbanTaskStatusEndpoint.ChangeStatus);
+        group.MapPut("/column", ChangeBoardColumnEndpoint.ChangeBoardColumn);
 
         return app;
     }

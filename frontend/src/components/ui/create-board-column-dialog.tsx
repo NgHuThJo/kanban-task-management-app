@@ -80,7 +80,7 @@ export function CreateBoardColumnDialog({
         <DialogTitle>Add New Column</DialogTitle>
         <Form onSubmit={handleSubmit}>
           <FormField name="column-name">
-            <FormControl placeholder="e.g. To Do" />
+            <FormControl placeholder="e.g. To Do" required />
             <FormMessage match="valueMissing">
               Please enter a board column name
             </FormMessage>

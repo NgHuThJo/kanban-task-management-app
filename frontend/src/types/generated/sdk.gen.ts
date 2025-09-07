@@ -28,6 +28,9 @@ import type {
   PutApiKanbantasksStatusData,
   PutApiKanbantasksStatusResponses,
   PutApiKanbantasksStatusErrors,
+  PutApiKanbantasksColumnData,
+  PutApiKanbantasksColumnResponses,
+  PutApiKanbantasksColumnErrors,
   PostApiBoardcolumnsData,
   PostApiBoardcolumnsResponses,
   PostApiBoardcolumnsErrors,
@@ -191,6 +194,23 @@ export const putApiKanbantasksStatus = <ThrowOnError extends boolean = false>(
     ThrowOnError
   >({
     url: "/api/kanbantasks/status",
+    ...options,
+    headers: {
+      "Content-Type": "application/json",
+      ...options.headers,
+    },
+  });
+};
+
+export const putApiKanbantasksColumn = <ThrowOnError extends boolean = false>(
+  options: Options<PutApiKanbantasksColumnData, ThrowOnError>,
+) => {
+  return (options.client ?? _heyApiClient).put<
+    PutApiKanbantasksColumnResponses,
+    PutApiKanbantasksColumnErrors,
+    ThrowOnError
+  >({
+    url: "/api/kanbantasks/column",
     ...options,
     headers: {
       "Content-Type": "application/json",
