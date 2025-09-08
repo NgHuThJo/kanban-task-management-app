@@ -15,25 +15,29 @@ import styles from "./board.module.css";
 import { CreateBoardColumnDialog } from "#frontend/components/ui/create-board-column-dialog";
 import { KanbanTaskDialog } from "#frontend/components/ui/task-dialog";
 import { Button } from "#frontend/components/primitives/button";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { zChangeBoardColumnRequest } from "#frontend/types/generated/zod.gen";
 import { makeZodErrorsUserFriendly } from "#frontend/utils/zod";
 
 export function Board() {
+  const [draggedTask, setDraggedTask] = useState<{
+    id: number;
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+  } | null>(null);
+  const [taskPosition, setTaskPosition] = useState<{
+    x: number;
+    y: number;
+  } | null>(null);
   const boardRef = useRef<HTMLDivElement>(null);
   const taskRef = useRef<HTMLElement>(null);
-  const pointerOffsetRef = useRef<{
-    clientX: number;
-    clientY: number;
-  }>({
-    clientX: 0,
-    clientY: 0,
-  });
-  const threshold = 10;
   const isDraggingRef = useRef(false);
   const currentBoardId = useCurrentBoardId();
   const { data: boards } = useSuspenseQuery(getApiBoardsOptions());
-  const { mutate: changeBoardColumn } = useMutation({
+  const { mutate } = useMutation({
     ...putApiKanbantasksColumnMutation,
   });
 
@@ -76,17 +80,21 @@ export function Board() {
         return;
       }
 
-      // prevSiblingRef.current =
-      //   nearestTask.previousElementSibling as HTMLDivElement | null;
-      const taskRect = nearestTask.getBoundingClientRect();
-      pointerOffsetRef.current = {
-        clientX: event.clientX,
-        clientY: event.clientY,
-      };
       taskRef.current = nearestTask;
       nearestTask.setPointerCapture(event.pointerId);
-      nearestTask.style.zIndex = "9999";
-      nearestTask.style.width = `${taskRect.width}px`;
+
+      const taskRect = nearestTask.getBoundingClientRect();
+      setDraggedTask({
+        id: Number(nearestTask.dataset.taskId),
+        x: event.clientX - taskRect.x,
+        y: event.clientY - taskRect.y,
+        width: taskRect.width,
+        height: taskRect.height,
+      });
+      setTaskPosition({
+        x: event.clientX,
+        y: event.clientY,
+      });
     };
 
     const handlePointerMove = (event: PointerEvent) => {
@@ -104,12 +112,11 @@ export function Board() {
             return;
           }
 
-          const originPointerPositionX = pointerOffsetRef.current.clientX;
-          const originPointerPositionY = pointerOffsetRef.current.clientY;
-          const dx = event.clientX - originPointerPositionX;
-          const dy = event.clientY - originPointerPositionY;
+          setTaskPosition({
+            x: event.clientX,
+            y: event.clientY,
+          });
 
-          currentTask.style.translate = `${dx}px ${dy}px`;
           frameId = null;
         });
       }
@@ -125,11 +132,25 @@ export function Board() {
         return;
       }
 
-      const dropTarget = (event.target as HTMLElement).closest(
+      const elementAtPointerPosition = document.elementFromPoint(
+        event.clientX,
+        event.clientY,
+      );
+
+      console.log(elementAtPointerPosition);
+
+      const currentColumnId = (
+        (event.target as HTMLElement).closest(
+          "[data-column-id]",
+        ) as HTMLElement | null
+      )?.dataset.columnId;
+      const dropTarget = (elementAtPointerPosition as HTMLElement).closest(
         "[data-column-id]",
       ) as HTMLElement | null;
 
-      if (dropTarget) {
+      console.log(dropTarget);
+
+      if (dropTarget && currentColumnId !== dropTarget.dataset.columnId) {
         const boardColumnId =
           typeof Number(dropTarget.dataset.columnId) === "number"
             ? Number(dropTarget.dataset.columnId)
@@ -152,26 +173,29 @@ export function Board() {
           );
           console.error("Payload errors", formattedErrors);
         } else {
-          return;
+          mutate(validationResult.data);
         }
 
         return;
       }
 
-      const originPointerPositionX = pointerOffsetRef.current.clientX;
-      const originPointerPositionY = pointerOffsetRef.current.clientY;
+      setDraggedTask(null);
+      setTaskPosition(null);
 
-      const dx = event.clientX - originPointerPositionX;
-      const dy = event.clientY - originPointerPositionY;
+      // const originPointerPositionX = pointerOffsetRef.current.clientX;
+      // const originPointerPositionY = pointerOffsetRef.current.clientY;
 
-      if (Math.hypot(dx, dy) >= threshold) {
-        isDraggingRef.current = true;
-      }
+      // const dx = event.clientX - originPointerPositionX;
+      // const dy = event.clientY - originPointerPositionY;
 
-      taskRef.current.style.translate = "";
-      taskRef.current.style.width = "";
-      taskRef.current.style.zIndex = "";
-      taskRef.current = null;
+      // if (Math.hypot(dx, dy) >= threshold) {
+      //   isDraggingRef.current = true;
+      // }
+
+      // taskRef.current.style.translate = "";
+      // taskRef.current.style.width = "";
+      // taskRef.current.style.zIndex = "";
+      // taskRef.current = null;
     };
 
     // disable native browser drag and drop
@@ -234,11 +258,34 @@ export function Board() {
               key={column.id}
             >
               {columnTaskDict?.[column.name]?.map((task) => (
-                <KanbanTaskDialog
-                  task={task}
-                  key={task.id}
-                  isDragging={isDraggingRef}
-                />
+                <>
+                  <KanbanTaskDialog
+                    task={task}
+                    key={task.id}
+                    isDragging={isDraggingRef}
+                  />
+                  {draggedTask &&
+                    taskPosition &&
+                    draggedTask.id === task.id &&
+                    createPortal(
+                      <div className={styles.overlay}>
+                        <div
+                          style={{
+                            transform: `translate(${taskPosition.x - draggedTask.x}px, ${taskPosition.y - draggedTask.y}px)`,
+                            width: `${draggedTask.width}px`,
+                            height: `${draggedTask.height}px`,
+                          }}
+                        >
+                          <KanbanTaskDialog
+                            task={task}
+                            key={task.id}
+                            isDragging={isDraggingRef}
+                          />
+                        </div>
+                      </div>,
+                      document.body,
+                    )}
+                </>
               ))}
             </div>
           </div>
