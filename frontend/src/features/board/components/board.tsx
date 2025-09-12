@@ -25,8 +25,10 @@ export function Board() {
   const queryClient = useQueryClient();
   const [draggedTask, setDraggedTask] = useState<{
     id: number;
-    x: number;
-    y: number;
+    offsetX: number;
+    offsetY: number;
+    originX: number;
+    originY: number;
     width: number;
     height: number;
   } | null>(null);
@@ -43,9 +45,6 @@ export function Board() {
     ...putApiKanbantasksColumnMutation(),
     onSuccess: async (data) => {
       await Promise.all([
-        // queryClient.invalidateQueries({
-        //   queryKey: getApiBoardsOptions().queryKey,
-        // }),
         queryClient.invalidateQueries({
           queryKey: getApiKanbantasksOptions({
             query: {
@@ -110,8 +109,10 @@ export function Board() {
       const taskRect = nearestTask.getBoundingClientRect();
       setDraggedTask({
         id: Number(nearestTask.dataset.taskId),
-        x: event.clientX - taskRect.x,
-        y: event.clientY - taskRect.y,
+        offsetX: event.clientX - taskRect.x,
+        offsetY: event.clientY - taskRect.y,
+        originX: event.clientX,
+        originY: event.clientY,
         width: taskRect.width,
         height: taskRect.height,
       });
@@ -156,10 +157,13 @@ export function Board() {
         return;
       }
 
-      const x = draggedTask?.x ?? 0;
-      const y = draggedTask?.y ?? 0;
+      const x = draggedTask?.originX ?? 0;
+      const y = draggedTask?.originY ?? 0;
       const dx = event.clientX - x;
       const dy = event.clientY - y;
+
+      const value = Math.hypot(dx, dy);
+      console.log(value);
 
       if (Math.hypot(dx, dy) >= threshold) {
         setIsDragging(true);
@@ -228,7 +232,7 @@ export function Board() {
       boardElement.removeEventListener("pointerup", handlePointerUp);
       document.removeEventListener("dragstart", onDragStart);
     };
-  }, [draggedTask, mutate]);
+  }, [taskPosition, mutate]);
 
   if (!currentBoardId) {
     return (
@@ -283,7 +287,7 @@ export function Board() {
                       <div className={styles.overlay}>
                         <div
                           style={{
-                            transform: `translate(${taskPosition.x - draggedTask.x}px, ${taskPosition.y - draggedTask.y}px)`,
+                            transform: `translate(${taskPosition.x - draggedTask.offsetX}px, ${taskPosition.y - draggedTask.offsetY}px)`,
                             width: `${draggedTask.width}px`,
                             height: `${draggedTask.height}px`,
                           }}
