@@ -1,4 +1,14 @@
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { Button } from "#frontend/components/primitives/button";
+import {
+  Card,
+  CardTitle,
+  CardContent,
+} from "#frontend/components/primitives/card";
 import {
   Dialog,
   DialogClose,
@@ -8,14 +18,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "#frontend/components/primitives/dialog";
-import { Cross } from "#frontend/components/ui/icon";
-import {
-  Card,
-  CardTitle,
-  CardContent,
-} from "#frontend/components/primitives/card";
-import { Progress } from "#frontend/components/primitives/progress";
-import { type GetKanbanTasksResponse } from "#frontend/types/generated";
 import {
   Form,
   FormControl,
@@ -23,27 +25,26 @@ import {
   FormLabel,
   Label,
 } from "#frontend/components/primitives/form";
-import { CreateBoardColumnDialog } from "#frontend/components/ui/create-board-column-dialog";
+import { Progress } from "#frontend/components/primitives/progress";
 import {
   Select,
   SelectTrigger,
   SelectValue,
   SelectContent,
+  SelectItem,
 } from "#frontend/components/primitives/select";
+import { CreateBoardColumnDialog } from "#frontend/components/ui/create-board-column-dialog";
+
+import { EditKanbanTaskPopover } from "#frontend/components/ui/edit-task-popover";
+import { Cross } from "#frontend/components/ui/icon";
+import { useCurrentBoardId } from "#frontend/store/board";
+import { type GetKanbanTasksResponse } from "#frontend/types/generated";
 import {
   getApiBoardsOptions,
   getApiKanbantasksOptions,
   postApiSubtasksMutation,
   putApiKanbantasksStatusMutation,
 } from "#frontend/types/generated/@tanstack/react-query.gen";
-import {
-  useMutation,
-  useQueryClient,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
-import { useCurrentBoardId } from "#frontend/store/board";
-import { SelectItem } from "#frontend/components/primitives/select";
-import { EditKanbanTaskPopover } from "#frontend/components/ui/edit-task-popover";
 
 type KanbantaskDialogProps = {
   task: GetKanbanTasksResponse;
@@ -153,10 +154,7 @@ export function KanbanTaskDialog({ task, isDragging }: KanbantaskDialogProps) {
           </CardContent>
         </Card>
       </DialogTrigger>
-      <DialogContent
-        aria-describedby="Create new board"
-        showCloseButton={false}
-      >
+      <DialogContent aria-describedby="create new task" showCloseButton={false}>
         <DialogHeader variant="row">
           <DialogTitle>{task.title}</DialogTitle>
           <div>

@@ -1,18 +1,9 @@
-import { useState, type ChangeEvent, type FormEvent } from "react";
 import {
   useQueryClient,
   useMutation,
   useSuspenseQuery,
 } from "@tanstack/react-query";
-import { Cross } from "#frontend/components/ui/icon";
-import {
-  getApiBoardsOptions,
-  putApiBoardsMutation,
-} from "#frontend/types/generated/@tanstack/react-query.gen";
-import { zUpdateBoardRequest } from "#frontend/types/generated/zod.gen";
-import { formDataToObject } from "#frontend/utils/object";
-import type { CreateBoardRequest } from "#frontend/types/generated";
-import { makeZodErrorsUserFriendly } from "#frontend/utils/zod";
+import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Button } from "#frontend/components/primitives/button";
 import {
   Form,
@@ -23,7 +14,16 @@ import {
   FormSubmit,
   Label,
 } from "#frontend/components/primitives/form";
+import { Cross } from "#frontend/components/ui/icon";
 import { useCurrentBoardId } from "#frontend/store/board";
+import type { CreateBoardRequest } from "#frontend/types/generated";
+import {
+  getApiBoardsOptions,
+  putApiBoardsMutation,
+} from "#frontend/types/generated/@tanstack/react-query.gen";
+import { zUpdateBoardRequest } from "#frontend/types/generated/zod.gen";
+import { formDataToObject } from "#frontend/utils/object";
+import { makeZodErrorsUserFriendly } from "#frontend/utils/zod";
 
 export function UpdateBoardForm() {
   const currentBoardId = useCurrentBoardId();

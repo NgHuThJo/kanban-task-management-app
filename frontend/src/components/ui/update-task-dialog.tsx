@@ -21,7 +21,7 @@ export function UpdateKanbantaskDialog({ task }: EditKanbantaskDialogProps) {
       <DialogTrigger asChild>
         <Button variant="link">Edit Task</Button>
       </DialogTrigger>
-      <DialogContent aria-describedby="Update task" showCloseButton={false}>
+      <DialogContent aria-describedby="update task" showCloseButton={false}>
         <DialogTitle>Edit Task</DialogTitle>
         <UpdateKanbanTaskForm task={task} />
         <DialogClose asChild>

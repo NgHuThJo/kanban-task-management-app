@@ -1,3 +1,6 @@
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { useState } from "react";
+import styles from "./delete-task-dialog.module.css";
 import { Button } from "#frontend/components/primitives/button";
 import {
   Dialog,
@@ -8,14 +11,11 @@ import {
   DialogTrigger,
 } from "#frontend/components/primitives/dialog";
 import { type GetKanbanTasksResponse } from "#frontend/types/generated";
-import { zDeleteKanbanTaskRequest } from "#frontend/types/generated/zod.gen";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
-import styles from "./delete-task-dialog.module.css";
 import {
   deleteApiKanbantasksMutation,
   getApiKanbantasksOptions,
 } from "#frontend/types/generated/@tanstack/react-query.gen";
-import { useState } from "react";
+import { zDeleteKanbanTaskRequest } from "#frontend/types/generated/zod.gen";
 
 type DeleteKanbantaskDialogProps = {
   task: GetKanbanTasksResponse;
@@ -96,7 +96,10 @@ export function DeleteKanbantaskDialog({ task }: DeleteKanbantaskDialogProps) {
           Delete Task
         </Button>
       </DialogTrigger>
-      <DialogContent aria-describedby="Update task" showCloseButton={false}>
+      <DialogContent
+        aria-describedby="delete task dialog"
+        showCloseButton={false}
+      >
         <DialogTitle>Delete Task</DialogTitle>
         <DialogDescription>
           {`Are you sure you want to delete the ${task.title} task and its subtasks? This action cannot be reversed.`}

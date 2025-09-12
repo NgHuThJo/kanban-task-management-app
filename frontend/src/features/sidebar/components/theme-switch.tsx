@@ -1,7 +1,7 @@
 import type { MouseEvent } from "react";
-import { useThemeStore } from "#frontend/store/theme";
-import { LightThemeIcon, DarkThemeIcon } from "#frontend/components/ui/icon";
 import styles from "./theme-switch.module.css";
+import { LightThemeIcon, DarkThemeIcon } from "#frontend/components/ui/icon";
+import { useThemeStore } from "#frontend/store/theme";
 
 export function ThemeSwitch() {
   const themeState = useThemeStore((state) => state);

@@ -1,12 +1,12 @@
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
+import { Suspense } from "react";
+import styles from "./index.module.css";
+import { Board } from "#frontend/features/board/components/board";
+import { Header } from "#frontend/features/header/components/header";
 import { Sidebar } from "#frontend/features/sidebar/components/sidebar";
 import { BoardStoreProvider } from "#frontend/store/board";
 import { getApiBoardsOptions } from "#frontend/types/generated/@tanstack/react-query.gen";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import styles from "./index.module.css";
-import { Header } from "#frontend/features/header/components/header";
-import { Board } from "#frontend/features/board/components/board";
-import { Suspense } from "react";
 
 export const Route = createFileRoute("/")({
   component: Index,

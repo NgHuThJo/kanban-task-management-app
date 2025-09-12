@@ -12,6 +12,7 @@
     "preview": "vite preview",
     "check-for-errors": "npx tsc --noEmit",
     "lint": "npx eslint ./src --ignore-pattern ./src/types/generated",
+    "prettier": "npx prettier . --write",
     "openapi-ts": "openapi-ts"
   },
   "keywords": [],

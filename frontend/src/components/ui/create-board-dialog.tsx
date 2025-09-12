@@ -1,3 +1,4 @@
+import type { ReactNode } from "react";
 import { Button } from "#frontend/components/primitives/button";
 import {
   Dialog,
@@ -6,10 +7,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "#frontend/components/primitives/dialog";
-
 import { CreateBoardForm } from "#frontend/components/ui/create-board-form";
 import { Cross } from "#frontend/components/ui/icon";
-import type { ReactNode } from "react";
 
 type CreateBoardDialogProps = {
   trigger: ReactNode;
@@ -22,7 +21,7 @@ export function CreateBoardDialog({
     <Dialog>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent
-        aria-describedby="Create new board"
+        aria-describedby="create new board"
         showCloseButton={false}
       >
         <DialogTitle>Add New Board</DialogTitle>

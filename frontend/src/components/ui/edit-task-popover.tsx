@@ -4,11 +4,10 @@ import {
   PopoverTrigger,
   PopoverContent,
 } from "#frontend/components/primitives/popover";
-import { UpdateKanbantaskDialog } from "#frontend/components/ui/update-task-dialog";
-import { VerticalEllipsis } from "#frontend/components/ui/icon";
-import type { GetKanbanTasksResponse } from "#frontend/types/generated";
-import { DeleteBoardDialog } from "#frontend/components/ui/delete-board-dialog";
 import { DeleteKanbantaskDialog } from "#frontend/components/ui/delete-task-dialog";
+import { VerticalEllipsis } from "#frontend/components/ui/icon";
+import { UpdateKanbantaskDialog } from "#frontend/components/ui/update-task-dialog";
+import type { GetKanbanTasksResponse } from "#frontend/types/generated";
 
 type EditKanbantaskPopoverProps = {
   task: GetKanbanTasksResponse;

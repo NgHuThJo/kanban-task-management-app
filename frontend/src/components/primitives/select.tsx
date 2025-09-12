@@ -1,5 +1,6 @@
-import * as React from "react";
 import * as SelectPrimitive from "@radix-ui/react-select";
+import * as React from "react";
+import styles from "./select.module.css";
 import {
   ChevronDown,
   CheckIcon,
@@ -7,7 +8,6 @@ import {
 } from "#frontend/components/ui/icon";
 
 import { cn } from "#frontend/lib/utils";
-import styles from "./select.module.css";
 
 function Select({
   ...props

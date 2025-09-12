@@ -1,11 +1,11 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { BoardIcon, VerticalEllipsis } from "#frontend/components/ui/icon";
-import { getApiBoardsOptions } from "#frontend/types/generated/@tanstack/react-query.gen";
-import { ThemeSwitch } from "#frontend/features/sidebar/components/theme-switch";
-import { CreateBoardDialog } from "#frontend/components/ui/create-board-dialog";
 import styles from "./sidebar.module.css";
-import { useBoardStore, useCurrentBoardId } from "#frontend/store/board";
 import { Button } from "#frontend/components/primitives/button";
+import { CreateBoardDialog } from "#frontend/components/ui/create-board-dialog";
+import { BoardIcon, VerticalEllipsis } from "#frontend/components/ui/icon";
+import { ThemeSwitch } from "#frontend/features/sidebar/components/theme-switch";
+import { useBoardStore, useCurrentBoardId } from "#frontend/store/board";
+import { getApiBoardsOptions } from "#frontend/types/generated/@tanstack/react-query.gen";
 
 export function Sidebar() {
   const { data: boards } = useSuspenseQuery(getApiBoardsOptions());

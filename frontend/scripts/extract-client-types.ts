@@ -1,5 +1,5 @@
-import ts from "typescript";
 import fs from "fs/promises";
+import ts from "typescript";
 
 const fileContent = await fs.readFile(
   "./src/types/client/generated-client.ts",

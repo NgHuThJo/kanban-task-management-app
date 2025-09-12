@@ -1,12 +1,12 @@
-import { StrictMode } from "react";
-import ReactDOM from "react-dom/client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { RouterProvider, createRouter } from "@tanstack/react-router";
+import { StrictMode } from "react";
+import ReactDOM from "react-dom/client";
 import { z } from "zod";
 import { routeTree } from "#frontend/routeTree.gen";
+import { ThemeStoreProvider } from "#frontend/store/theme";
 import { CapitalizeFirstLetter } from "#frontend/utils/string";
 import "#frontend/assets/styles";
-import { ThemeStoreProvider } from "#frontend/store/theme";
 
 z.setErrorMap((iss, ctx) => {
   const formattedPath = iss.path.map((value) => {

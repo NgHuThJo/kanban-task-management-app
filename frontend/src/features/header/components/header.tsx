@@ -1,12 +1,12 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
-import { useCurrentBoardId } from "#frontend/store/board";
-import { getApiBoardsOptions } from "#frontend/types/generated/@tanstack/react-query.gen";
-import { Logo, LogoMobile } from "#frontend/components/ui/icon";
 import styles from "./header.module.css";
-import { useMediaQuery } from "#frontend/hooks/use-media-query";
 import { CreateKanbanTaskDialog } from "#frontend/components/ui/create-task-dialog";
 import { EditBoardPopover } from "#frontend/components/ui/edit-board-popover";
+import { Logo, LogoMobile } from "#frontend/components/ui/icon";
 import { SidebarDialog } from "#frontend/components/ui/sidebar-dialog";
+import { useMediaQuery } from "#frontend/hooks/use-media-query";
+import { useCurrentBoardId } from "#frontend/store/board";
+import { getApiBoardsOptions } from "#frontend/types/generated/@tanstack/react-query.gen";
 
 export function Header() {
   const { isMatch: isMobile } = useMediaQuery("(width < 768px)");

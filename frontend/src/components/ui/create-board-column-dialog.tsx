@@ -1,11 +1,6 @@
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import type { FormEvent, ReactNode } from "react";
 import { Button } from "#frontend/components/primitives/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormMessage,
-  FormSubmit,
-} from "#frontend/components/primitives/form";
 import {
   Dialog,
   DialogTrigger,
@@ -13,16 +8,21 @@ import {
   DialogTitle,
   DialogClose,
 } from "#frontend/components/primitives/dialog";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormMessage,
+  FormSubmit,
+} from "#frontend/components/primitives/form";
 import { Cross } from "#frontend/components/ui/icon";
-import type { FormEvent, ReactNode } from "react";
+import { useCurrentBoardId } from "#frontend/store/board";
 import {
   getApiBoardsOptions,
   postApiBoardcolumnsMutation,
 } from "#frontend/types/generated/@tanstack/react-query.gen";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { formDataToObject } from "#frontend/utils/object";
-import { useCurrentBoardId } from "#frontend/store/board";
 import { zCreateBoardColumnRequest } from "#frontend/types/generated/zod.gen";
+import { formDataToObject } from "#frontend/utils/object";
 import { makeZodErrorsUserFriendly } from "#frontend/utils/zod";
 
 type CreateBoardColumnDialogProps = {
@@ -76,7 +76,10 @@ export function CreateBoardColumnDialog({
   return (
     <Dialog>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent aria-describedby="" showCloseButton={false}>
+      <DialogContent
+        aria-describedby="create board column dialog"
+        showCloseButton={false}
+      >
         <DialogTitle>Add New Column</DialogTitle>
         <Form onSubmit={handleSubmit}>
           <FormField name="column-name">

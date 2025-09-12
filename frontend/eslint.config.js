@@ -63,6 +63,7 @@ export default defineConfig(
         "warn",
         { argsIgnorePattern: "^_", varsIgnorePattern: "^_" },
       ],
+      "@typescript-eslint/no-explicit-any": "warn",
     },
   },
   prettierConfig, // Disable rules that conflict with Prettier

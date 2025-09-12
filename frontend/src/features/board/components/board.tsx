@@ -4,7 +4,7 @@ import {
   useSuspenseQueries,
   useSuspenseQuery,
 } from "@tanstack/react-query";
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import styles from "./board.module.css";
 import { Button } from "#frontend/components/primitives/button";
@@ -162,9 +162,6 @@ export function Board() {
       const dx = event.clientX - x;
       const dy = event.clientY - y;
 
-      const value = Math.hypot(dx, dy);
-      console.log(value);
-
       if (Math.hypot(dx, dy) >= threshold) {
         setIsDragging(true);
       }
@@ -232,7 +229,7 @@ export function Board() {
       boardElement.removeEventListener("pointerup", handlePointerUp);
       document.removeEventListener("dragstart", onDragStart);
     };
-  }, [taskPosition, mutate]);
+  }, [draggedTask, mutate]);
 
   if (!currentBoardId) {
     return (
@@ -274,7 +271,7 @@ export function Board() {
               key={column.id}
             >
               {columnTaskDict?.[column.name]?.map((task) => (
-                <>
+                <Fragment key={task.id}>
                   <KanbanTaskDialog
                     task={task}
                     key={task.id}
@@ -301,7 +298,7 @@ export function Board() {
                       </div>,
                       document.body,
                     )}
-                </>
+                </Fragment>
               ))}
             </div>
           </div>

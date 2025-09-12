@@ -6,9 +6,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "#frontend/components/primitives/dialog";
-import { UpdateBoardForm } from "#frontend/components/ui/update-board-form";
-
 import { Cross } from "#frontend/components/ui/icon";
+import { UpdateBoardForm } from "#frontend/components/ui/update-board-form";
 
 export function UpdateBoardDialog() {
   return (
@@ -16,7 +15,7 @@ export function UpdateBoardDialog() {
       <DialogTrigger asChild>
         <Button variant="link">Edit board</Button>
       </DialogTrigger>
-      <DialogContent aria-describedby="Update board" showCloseButton={false}>
+      <DialogContent aria-describedby="update board" showCloseButton={false}>
         <DialogTitle>Edit Board</DialogTitle>
         <UpdateBoardForm />
         <DialogClose asChild>

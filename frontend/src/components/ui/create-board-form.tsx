@@ -1,3 +1,5 @@
+import { useQueryClient, useMutation } from "@tanstack/react-query";
+import { useState, type ChangeEvent, type FormEvent } from "react";
 import { Button } from "#frontend/components/primitives/button";
 import {
   Form,
@@ -8,6 +10,7 @@ import {
   FormSubmit,
   Label,
 } from "#frontend/components/primitives/form";
+import { Cross } from "#frontend/components/ui/icon";
 import { useBoardStore } from "#frontend/store/board";
 import type { Column } from "#frontend/types/custom/custom";
 import type { CreateBoardRequest } from "#frontend/types/generated";
@@ -18,9 +21,6 @@ import {
 import { zCreateBoardRequest } from "#frontend/types/generated/zod.gen";
 import { formDataToObject } from "#frontend/utils/object";
 import { makeZodErrorsUserFriendly } from "#frontend/utils/zod";
-import { useQueryClient, useMutation } from "@tanstack/react-query";
-import { Cross } from "#frontend/components/ui/icon";
-import { useState, type ChangeEvent, type FormEvent } from "react";
 
 export function CreateBoardForm() {
   const [validationErrors, setValidationErrors] = useState<ReturnType<

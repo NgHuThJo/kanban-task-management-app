@@ -1,3 +1,6 @@
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { useState, type CSSProperties } from "react";
+import styles from "./sidebar-dialog.module.css";
 import { Button } from "#frontend/components/primitives/button";
 import {
   Dialog,
@@ -5,6 +8,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "#frontend/components/primitives/dialog";
+import { CreateBoardDialog } from "#frontend/components/ui/create-board-dialog";
 import {
   BoardIcon,
   ChevronDown,
@@ -12,13 +16,8 @@ import {
   VerticalEllipsis,
 } from "#frontend/components/ui/icon";
 import { ThemeSwitch } from "#frontend/features/sidebar/components/theme-switch";
-
 import { useBoardStore, useCurrentBoardId } from "#frontend/store/board";
 import { getApiBoardsOptions } from "#frontend/types/generated/@tanstack/react-query.gen";
-import { useSuspenseQuery } from "@tanstack/react-query";
-import { useState, type CSSProperties } from "react";
-import styles from "./sidebar-dialog.module.css";
-import { CreateBoardDialog } from "#frontend/components/ui/create-board-dialog";
 
 export function SidebarDialog() {
   const [open, setOpen] = useState(false);
@@ -38,7 +37,7 @@ export function SidebarDialog() {
         </Button>
       </DialogTrigger>
       <DialogContent
-        aria-describedby="Mobile sidebar dialog"
+        aria-describedby="mobile sidebar dialog"
         showCloseButton={false}
         variant="sidebar"
         style={
