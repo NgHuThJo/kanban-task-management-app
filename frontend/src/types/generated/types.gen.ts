@@ -5,6 +5,11 @@ export type ChangeBoardColumnRequest = {
   boardColumnId: number;
 };
 
+export type ChangeBoardColumnResponse = {
+  sourceBoardColumnId: number;
+  destinationBoardColumnId: number;
+};
+
 export type ChangeKanbanTaskStatusRequest = {
   id: number;
   boardColumnId: number;
@@ -383,9 +388,9 @@ export type PutApiKanbantasksColumnError =
 
 export type PutApiKanbantasksColumnResponses = {
   /**
-   * No Content
+   * OK
    */
-  204: void;
+  200: ChangeBoardColumnResponse;
 };
 
 export type PutApiKanbantasksColumnResponse =

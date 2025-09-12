@@ -1,14 +1,12 @@
 import js from "@eslint/js";
-import tseslint from "typescript-eslint";
-import typescriptParser from "@typescript-eslint/parser";
-import typescriptPlugin from "@typescript-eslint/eslint-plugin";
-import reactPlugin from "eslint-plugin-react";
-import reactHooksPlugin from "eslint-plugin-react-hooks";
-import prettierPlugin from "eslint-plugin-prettier";
+import { defineConfig } from "eslint/config";
 import prettierConfig from "eslint-config-prettier";
 import importPlugin from "eslint-plugin-import";
+import reactPlugin from "eslint-plugin-react";
+import reactHooksPlugin from "eslint-plugin-react-hooks";
 import unusedImportsPlugin from "eslint-plugin-unused-imports";
 import globals from "globals";
+import tseslint from "typescript-eslint";
 
 const browserGlobals = {
   ...globals.browser, // Add browser globals
@@ -17,19 +15,48 @@ const browserGlobals = {
 
 delete browserGlobals["AudioWorkletGlobalScope "];
 
-export default [
+export default defineConfig(
   js.configs.recommended, // Built-in recommended ESLint rules
-  ...tseslint.configs.recommended,
+  tseslint.configs.recommended,
   {
-    files: ["**/*.{ts,tsx}"],
+    files: ["**/*.{js,jsx,ts,tsx}"],
     languageOptions: {
-      parser: typescriptParser,
-      ecmaVersion: "latest",
-      sourceType: "module",
+      globals: browserGlobals,
     },
     plugins: {
-      "@typescript-eslint": typescriptPlugin,
+      react: reactPlugin,
+      "react-hooks": reactHooksPlugin,
+      import: importPlugin,
+      "unused-imports": unusedImportsPlugin,
     },
+    rules: {
+      "no-console": "warn",
+      "react/jsx-filename-extension": [1, { extensions: [".jsx", ".tsx"] }], // Allow JSX in .jsx and .tsx files
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn",
+      "unused-imports/no-unused-imports": "error",
+      "import/no-duplicates": "warn",
+      "import/order": [
+        "warn",
+        {
+          groups: [
+            "builtin",
+            "external",
+            "internal",
+            "parent",
+            "sibling",
+            "index",
+          ],
+          alphabetize: {
+            order: "asc",
+            caseInsensitive: true,
+          },
+        },
+      ],
+    },
+  },
+  {
+    files: ["**/*.{ts,tsx}"],
     rules: {
       "no-unused-vars": "off", // Disable base rule
       "@typescript-eslint/no-unused-vars": [
@@ -38,30 +65,5 @@ export default [
       ],
     },
   },
-  {
-    files: ["**/*.{js,jsx,ts,tsx}"],
-    languageOptions: {
-      ecmaVersion: "latest",
-      sourceType: "module",
-      globals: {
-        ...browserGlobals,
-      },
-    },
-    plugins: {
-      react: reactPlugin,
-      "react-hooks": reactHooksPlugin,
-      prettier: prettierPlugin,
-      import: importPlugin,
-      "unused-imports": unusedImportsPlugin,
-    },
-    rules: {
-      "react/jsx-filename-extension": [1, { extensions: [".jsx", ".tsx"] }], // Allow JSX in .jsx and .tsx files
-      "react-hooks/rules-of-hooks": "error",
-      "react-hooks/exhaustive-deps": "warn",
-      "prettier/prettier": ["error"],
-      "unused-imports/no-unused-imports": "error",
-      "import/no-duplicates": "warn",
-      ...prettierConfig.rules, // Disable rules that conflict with Prettier
-    },
-  },
-];
+  prettierConfig, // Disable rules that conflict with Prettier
+);

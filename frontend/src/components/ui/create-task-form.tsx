@@ -201,7 +201,9 @@ export function CreateTaskForm() {
             </SelectTrigger>
             <SelectContent sideOffset={8}>
               {boardColumnNames.map((columnName) => (
-                <SelectItem value={columnName}>{columnName}</SelectItem>
+                <SelectItem value={columnName} key={columnName}>
+                  {columnName}
+                </SelectItem>
               ))}
               <CreateBoardColumnDialog
                 trigger={

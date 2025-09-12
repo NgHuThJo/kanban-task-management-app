@@ -15,6 +15,15 @@ public record ChangeBoardColumnRequest
     public required int BoardColumnId { get; init; }
 }
 
+public record ChangeBoardColumnResponse
+{
+    [Range(1, int.MaxValue)]
+    public required int SourceBoardColumnId { get; init; }
+
+    [Range(1, int.MaxValue)]
+    public required int DestinationBoardColumnId { get; init; }
+}
+
 public class ChangeBoardColumnValidator
     : AbstractValidator<ChangeBoardColumnRequest>
 {
@@ -28,7 +37,7 @@ public class ChangeBoardColumnValidator
 public static class ChangeBoardColumnEndpoint
 {
     public static async Task<
-        Results<ValidationProblem, NoContent>
+        Results<ValidationProblem, Ok<ChangeBoardColumnResponse>>
     > ChangeBoardColumn(
         [FromServices] ChangeBoardColumnHandler handler,
         [FromServices] IValidator<ChangeBoardColumnRequest> validator,
@@ -44,9 +53,9 @@ public static class ChangeBoardColumnEndpoint
             );
         }
 
-        await handler.Handle(command);
+        var columnIds = await handler.Handle(command);
 
-        return TypedResults.NoContent();
+        return TypedResults.Ok(columnIds);
     }
 }
 
@@ -54,7 +63,9 @@ public class ChangeBoardColumnHandler(AppDbContext context)
 {
     private readonly AppDbContext _context = context;
 
-    public async Task Handle(ChangeBoardColumnRequest command)
+    public async Task<ChangeBoardColumnResponse> Handle(
+        ChangeBoardColumnRequest command
+    )
     {
         var kanbantask =
             await _context.KanbanTasks.FindAsync(command.Id)
@@ -62,8 +73,16 @@ public class ChangeBoardColumnHandler(AppDbContext context)
                 $"Kanban task with id {command.Id} does not exist"
             );
 
+        var columnIds = new ChangeBoardColumnResponse
+        {
+            SourceBoardColumnId = kanbantask.BoardColumnId,
+            DestinationBoardColumnId = command.BoardColumnId,
+        };
+
         kanbantask.BoardColumnId = command.BoardColumnId;
 
         await _context.SaveChangesAsync();
+
+        return columnIds;
     }
 }

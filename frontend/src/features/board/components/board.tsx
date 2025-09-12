@@ -1,26 +1,28 @@
 import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQueries,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
+import { useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
+import styles from "./board.module.css";
+import { Button } from "#frontend/components/primitives/button";
+import { ScrollArea } from "#frontend/components/primitives/scroll-area";
+import { CreateBoardColumnDialog } from "#frontend/components/ui/create-board-column-dialog";
+import { KanbanTaskDialog } from "#frontend/components/ui/task-dialog";
+import { useCurrentBoardId } from "#frontend/store/board";
+import { type GetKanbanTasksResponse } from "#frontend/types/generated";
+import {
   getApiBoardsOptions,
   getApiKanbantasksOptions,
   putApiKanbantasksColumnMutation,
 } from "#frontend/types/generated/@tanstack/react-query.gen";
-import {
-  useMutation,
-  useSuspenseQueries,
-  useSuspenseQuery,
-} from "@tanstack/react-query";
-import { useCurrentBoardId } from "#frontend/store/board";
-import { type GetKanbanTasksResponse } from "#frontend/types/generated";
-import { ScrollArea } from "#frontend/components/primitives/scroll-area";
-import styles from "./board.module.css";
-import { CreateBoardColumnDialog } from "#frontend/components/ui/create-board-column-dialog";
-import { KanbanTaskDialog } from "#frontend/components/ui/task-dialog";
-import { Button } from "#frontend/components/primitives/button";
-import { useEffect, useRef, useState } from "react";
-import { createPortal } from "react-dom";
 import { zChangeBoardColumnRequest } from "#frontend/types/generated/zod.gen";
 import { makeZodErrorsUserFriendly } from "#frontend/utils/zod";
 
 export function Board() {
+  const queryClient = useQueryClient();
   const [draggedTask, setDraggedTask] = useState<{
     id: number;
     x: number;
@@ -32,13 +34,34 @@ export function Board() {
     x: number;
     y: number;
   } | null>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const boardRef = useRef<HTMLDivElement>(null);
   const taskRef = useRef<HTMLElement>(null);
-  const isDraggingRef = useRef(false);
   const currentBoardId = useCurrentBoardId();
   const { data: boards } = useSuspenseQuery(getApiBoardsOptions());
   const { mutate } = useMutation({
-    ...putApiKanbantasksColumnMutation,
+    ...putApiKanbantasksColumnMutation(),
+    onSuccess: async (data) => {
+      await Promise.all([
+        // queryClient.invalidateQueries({
+        //   queryKey: getApiBoardsOptions().queryKey,
+        // }),
+        queryClient.invalidateQueries({
+          queryKey: getApiKanbantasksOptions({
+            query: {
+              BoardColumnId: data.sourceBoardColumnId,
+            },
+          }).queryKey,
+        }),
+        queryClient.invalidateQueries({
+          queryKey: getApiKanbantasksOptions({
+            query: {
+              BoardColumnId: data.destinationBoardColumnId,
+            },
+          }).queryKey,
+        }),
+      ]);
+    },
   });
 
   const currentBoard = boards
@@ -63,6 +86,7 @@ export function Board() {
 
   useEffect(() => {
     const boardElement = boardRef.current;
+    const threshold = 20;
     let frameId: number | null = null;
 
     if (!boardElement) {
@@ -70,7 +94,7 @@ export function Board() {
     }
 
     const handlePointerDown = (event: PointerEvent) => {
-      isDraggingRef.current = false;
+      setIsDragging(false);
       const target = event.target as HTMLElement;
       const nearestTask = target.closest(
         "[data-task-id]",
@@ -132,12 +156,19 @@ export function Board() {
         return;
       }
 
+      const x = draggedTask?.x ?? 0;
+      const y = draggedTask?.y ?? 0;
+      const dx = event.clientX - x;
+      const dy = event.clientY - y;
+
+      if (Math.hypot(dx, dy) >= threshold) {
+        setIsDragging(true);
+      }
+
       const elementAtPointerPosition = document.elementFromPoint(
         event.clientX,
         event.clientY,
       );
-
-      console.log(elementAtPointerPosition);
 
       const currentColumnId = (
         (event.target as HTMLElement).closest(
@@ -147,8 +178,6 @@ export function Board() {
       const dropTarget = (elementAtPointerPosition as HTMLElement).closest(
         "[data-column-id]",
       ) as HTMLElement | null;
-
-      console.log(dropTarget);
 
       if (dropTarget && currentColumnId !== dropTarget.dataset.columnId) {
         const boardColumnId =
@@ -173,29 +202,14 @@ export function Board() {
           );
           console.error("Payload errors", formattedErrors);
         } else {
-          mutate(validationResult.data);
+          mutate({
+            body: validationResult.data,
+          });
         }
-
-        return;
       }
 
       setDraggedTask(null);
       setTaskPosition(null);
-
-      // const originPointerPositionX = pointerOffsetRef.current.clientX;
-      // const originPointerPositionY = pointerOffsetRef.current.clientY;
-
-      // const dx = event.clientX - originPointerPositionX;
-      // const dy = event.clientY - originPointerPositionY;
-
-      // if (Math.hypot(dx, dy) >= threshold) {
-      //   isDraggingRef.current = true;
-      // }
-
-      // taskRef.current.style.translate = "";
-      // taskRef.current.style.width = "";
-      // taskRef.current.style.zIndex = "";
-      // taskRef.current = null;
     };
 
     // disable native browser drag and drop
@@ -214,7 +228,7 @@ export function Board() {
       boardElement.removeEventListener("pointerup", handlePointerUp);
       document.removeEventListener("dragstart", onDragStart);
     };
-  }, []);
+  }, [draggedTask, mutate]);
 
   if (!currentBoardId) {
     return (
@@ -241,9 +255,7 @@ export function Board() {
           }),
       };
     },
-    {} as {
-      [key: string]: GetKanbanTasksResponse[];
-    },
+    {} as Record<string, GetKanbanTasksResponse[]>,
   );
 
   return currentBoard ? (
@@ -262,7 +274,7 @@ export function Board() {
                   <KanbanTaskDialog
                     task={task}
                     key={task.id}
-                    isDragging={isDraggingRef}
+                    isDragging={isDragging}
                   />
                   {draggedTask &&
                     taskPosition &&
@@ -279,7 +291,7 @@ export function Board() {
                           <KanbanTaskDialog
                             task={task}
                             key={task.id}
-                            isDragging={isDraggingRef}
+                            isDragging={isDragging}
                           />
                         </div>
                       </div>,

@@ -44,11 +44,10 @@ import {
 import { useCurrentBoardId } from "#frontend/store/board";
 import { SelectItem } from "#frontend/components/primitives/select";
 import { EditKanbanTaskPopover } from "#frontend/components/ui/edit-task-popover";
-import type { RefObject } from "react";
 
 type KanbantaskDialogProps = {
   task: GetKanbanTasksResponse;
-  isDragging: RefObject<boolean>;
+  isDragging: boolean;
 };
 
 export function KanbanTaskDialog({ task, isDragging }: KanbantaskDialogProps) {
@@ -129,7 +128,7 @@ export function KanbanTaskDialog({ task, isDragging }: KanbantaskDialogProps) {
       <DialogTrigger
         asChild
         onClick={(event) => {
-          if (isDragging.current) {
+          if (isDragging) {
             event.preventDefault();
           }
         }}
