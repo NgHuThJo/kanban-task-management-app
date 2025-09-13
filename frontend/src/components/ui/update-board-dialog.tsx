@@ -15,7 +15,7 @@ export function UpdateBoardDialog() {
       <DialogTrigger asChild>
         <Button variant="link">Edit board</Button>
       </DialogTrigger>
-      <DialogContent aria-describedby="update board" showCloseButton={false}>
+      <DialogContent aria-describedby={undefined} showCloseButton={false}>
         <DialogTitle>Edit Board</DialogTitle>
         <UpdateBoardForm />
         <DialogClose asChild>

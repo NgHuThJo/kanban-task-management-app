@@ -20,10 +20,7 @@ export function CreateBoardDialog({
   return (
     <Dialog>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent
-        aria-describedby="create new board"
-        showCloseButton={false}
-      >
+      <DialogContent aria-describedby={undefined} showCloseButton={false}>
         <DialogTitle>Add New Board</DialogTitle>
         <CreateBoardForm />
         <DialogClose asChild>

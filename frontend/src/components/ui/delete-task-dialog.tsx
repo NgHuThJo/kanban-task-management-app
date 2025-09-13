@@ -96,10 +96,7 @@ export function DeleteKanbantaskDialog({ task }: DeleteKanbantaskDialogProps) {
           Delete Task
         </Button>
       </DialogTrigger>
-      <DialogContent
-        aria-describedby="delete task dialog"
-        showCloseButton={false}
-      >
+      <DialogContent aria-describedby={undefined} showCloseButton={false}>
         <DialogTitle>Delete Task</DialogTitle>
         <DialogDescription>
           {`Are you sure you want to delete the ${task.title} task and its subtasks? This action cannot be reversed.`}

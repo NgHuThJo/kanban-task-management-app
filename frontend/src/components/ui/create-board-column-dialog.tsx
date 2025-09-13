@@ -76,10 +76,7 @@ export function CreateBoardColumnDialog({
   return (
     <Dialog>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent
-        aria-describedby="create board column dialog"
-        showCloseButton={false}
-      >
+      <DialogContent aria-describedby={undefined} showCloseButton={false}>
         <DialogTitle>Add New Column</DialogTitle>
         <Form onSubmit={handleSubmit}>
           <FormField name="column-name">

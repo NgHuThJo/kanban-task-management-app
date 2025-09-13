@@ -83,7 +83,7 @@ export function DeleteBoardDialog() {
           Delete board
         </Button>
       </DialogTrigger>
-      <DialogContent aria-describedby="delete board" showCloseButton={false}>
+      <DialogContent aria-describedby={undefined} showCloseButton={false}>
         <DialogTitle variant="destructive">Remove current board</DialogTitle>
         <DialogDescription>
           Are you sure you want to delete the current board? This action will

@@ -37,7 +37,7 @@ export function SidebarDialog() {
         </Button>
       </DialogTrigger>
       <DialogContent
-        aria-describedby="mobile sidebar dialog"
+        aria-describedby={undefined}
         showCloseButton={false}
         variant="sidebar"
         style={

@@ -154,7 +154,7 @@ export function KanbanTaskDialog({ task, isDragging }: KanbantaskDialogProps) {
           </CardContent>
         </Card>
       </DialogTrigger>
-      <DialogContent aria-describedby="create new task" showCloseButton={false}>
+      <DialogContent aria-describedby={undefined} showCloseButton={false}>
         <DialogHeader variant="row">
           <DialogTitle>{task.title}</DialogTitle>
           <div>
