@@ -106,6 +106,12 @@ export function Board() {
       taskRef.current = nearestTask;
       nearestTask.setPointerCapture(event.pointerId);
 
+      if (typeof styles.hidden !== "string") {
+        console.error("Hidden class does not exist");
+      } else {
+        nearestTask.classList.add(styles.hidden);
+      }
+
       const taskRect = nearestTask.getBoundingClientRect();
       setDraggedTask({
         id: Number(nearestTask.dataset.taskId),
@@ -209,6 +215,11 @@ export function Board() {
         }
       }
 
+      if (typeof styles.hidden !== "string") {
+        console.error("Hidden class does not exist");
+      } else {
+        taskRef.current.classList.remove(styles.hidden);
+      }
       setDraggedTask(null);
       setTaskPosition(null);
     };
