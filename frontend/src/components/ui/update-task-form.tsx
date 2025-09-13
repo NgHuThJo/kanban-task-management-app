@@ -223,7 +223,9 @@ export function UpdateKanbanTaskForm({ task }: UpdateKanbantaskFormProps) {
             </SelectTrigger>
             <SelectContent sideOffset={8}>
               {boardColumnNames.map(({ id, name }) => (
-                <SelectItem value={id.toString()}>{name}</SelectItem>
+                <SelectItem value={id.toString()} key={id}>
+                  {name}
+                </SelectItem>
               ))}
               <CreateBoardColumnDialog
                 trigger={

@@ -45,5 +45,5 @@
 }
 
 .hidden {
-  visibility: hidden;
+  visibility: collapse;
 }

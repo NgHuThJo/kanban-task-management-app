@@ -194,7 +194,10 @@ export function KanbanTaskDialog({ task, isDragging }: KanbantaskDialogProps) {
                 </SelectTrigger>
                 <SelectContent sideOffset={8}>
                   {boardData.boardColumnNames.map((columnName) => (
-                    <SelectItem value={columnName.id.toString()}>
+                    <SelectItem
+                      value={columnName.id.toString()}
+                      key={columnName.id}
+                    >
                       {columnName.name}
                     </SelectItem>
                   ))}

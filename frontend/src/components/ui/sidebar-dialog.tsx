@@ -59,6 +59,7 @@ export function SidebarDialog() {
               variant="sidebar"
               size="sidebar"
               intent={id === currentBoardId ? "active" : undefined}
+              key={id}
               onClick={() => {
                 handleChangeBoard(id);
               }}

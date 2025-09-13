@@ -213,13 +213,12 @@ export function Board() {
             body: validationResult.data,
           });
         }
+      } else if (typeof styles.hidden === "string") {
+        taskRef.current.classList.remove(styles.hidden);
+      } else {
+        console.error("Hidden class does not exist");
       }
 
-      if (typeof styles.hidden !== "string") {
-        console.error("Hidden class does not exist");
-      } else {
-        taskRef.current.classList.remove(styles.hidden);
-      }
       setDraggedTask(null);
       setTaskPosition(null);
     };
