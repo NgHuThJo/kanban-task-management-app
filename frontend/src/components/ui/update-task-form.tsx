@@ -230,7 +230,7 @@ export function UpdateKanbanTaskForm({ task }: UpdateKanbantaskFormProps) {
               <CreateBoardColumnDialog
                 trigger={
                   <Button variant="select" size="select">
-                    "+ Add New Column"
+                    + Add New Column
                   </Button>
                 }
               />

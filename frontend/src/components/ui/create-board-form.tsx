@@ -22,11 +22,25 @@ import { zCreateBoardRequest } from "#frontend/types/generated/zod.gen";
 import { formDataToObject } from "#frontend/utils/object";
 import { makeZodErrorsUserFriendly } from "#frontend/utils/zod";
 
-export function CreateBoardForm() {
-  const [validationErrors, setValidationErrors] = useState<ReturnType<
-    typeof makeZodErrorsUserFriendly<CreateBoardRequest>
-  > | null>(null);
+type CreateBoardFormProps = {
+  dialogState: {
+    changeDialogOpenState: (isOpen: boolean) => void;
+  };
+};
+
+export function CreateBoardForm({
+  dialogState: { changeDialogOpenState },
+}: CreateBoardFormProps) {
   const [columns, setColumns] = useState<Column[]>([]);
+  const [errors, setErrors] = useState<{
+    client: ReturnType<
+      typeof makeZodErrorsUserFriendly<CreateBoardRequest>
+    > | null;
+    server: string | null | undefined;
+  }>({
+    client: null,
+    server: null,
+  });
   const queryClient = useQueryClient();
   const setCurrentBoardId = useBoardStore((state) => state.setCurrentBoardId);
 
@@ -37,6 +51,13 @@ export function CreateBoardForm() {
         queryKey: getApiBoardsOptions().queryKey,
       });
       setCurrentBoardId(data.id);
+      changeDialogOpenState(false);
+    },
+    onError: (error) => {
+      setErrors((prev) => ({
+        ...prev,
+        server: error.detail,
+      }));
     },
   });
 
@@ -48,15 +69,8 @@ export function CreateBoardForm() {
     setColumns((prev) => [...prev, { id: crypto.randomUUID(), name: "" }]);
   };
 
-  const handleDeleteColumn = (columnId: string, index: number) => {
+  const handleDeleteColumn = (columnId: string) => {
     setColumns((prev) => prev.filter(({ id }) => id != columnId));
-    setValidationErrors((prev) => {
-      const copy = prev;
-
-      copy?.boardColumns.splice(index, 1);
-
-      return copy;
-    });
   };
 
   const handleChangeColumnName = (
@@ -96,7 +110,10 @@ export function CreateBoardForm() {
     if (!validatedResult.success) {
       const formattedErrors = makeZodErrorsUserFriendly(validatedResult.error);
 
-      setValidationErrors(formattedErrors);
+      setErrors((prev) => ({
+        ...prev,
+        client: formattedErrors,
+      }));
     } else {
       mutate({
         body: validatedResult.data,
@@ -105,13 +122,26 @@ export function CreateBoardForm() {
   };
 
   return (
-    <Form onSubmit={handleCreateBoard}>
-      <FormField name="board-name">
+    <Form
+      onSubmit={handleCreateBoard}
+      onClearServerErrors={() => {
+        setErrors({
+          client: null,
+          server: null,
+        });
+      }}
+    >
+      <FormField
+        name="board-name"
+        serverInvalid={typeof errors.server === "string"}
+      >
         <FormLabel>Board Name</FormLabel>
         <FormControl required />
         <FormMessage match="valueMissing">
           Please enter a valid board name
         </FormMessage>
+        {errors.client && <FormMessage>{errors.client.name}</FormMessage>}
+        {errors.server && <FormMessage>{errors.server}</FormMessage>}
       </FormField>
       <Label>Columns</Label>
       {columns.map(({ id, name }, index) => (
@@ -129,7 +159,7 @@ export function CreateBoardForm() {
               size="icon"
               type="button"
               onClick={() => {
-                handleDeleteColumn(id, index);
+                handleDeleteColumn(id);
               }}
             >
               <Cross />
@@ -137,6 +167,9 @@ export function CreateBoardForm() {
             <FormMessage match="valueMissing">
               Please enter a valid board column name
             </FormMessage>
+            {errors.client && (
+              <FormMessage>{errors.client.boardColumns[index]}</FormMessage>
+            )}
           </FormField>
         </div>
       ))}

@@ -36,7 +36,15 @@ import { zCreateKanbanTaskRequest } from "#frontend/types/generated/zod.gen";
 import { formDataToObject } from "#frontend/utils/object";
 import { makeZodErrorsUserFriendly } from "#frontend/utils/zod";
 
-export function CreateTaskForm() {
+type CreateTaskFormProps = {
+  dialogState: {
+    changeDialogOpenState: (isOpen: boolean) => void;
+  };
+};
+
+export function CreateTaskForm({
+  dialogState: { changeDialogOpenState },
+}: CreateTaskFormProps) {
   const queryClient = useQueryClient();
   const { isPending, mutate } = useMutation({
     ...postApiKanbantasksMutation(),
@@ -48,13 +56,26 @@ export function CreateTaskForm() {
           },
         }).queryKey,
       });
+      changeDialogOpenState(false);
+    },
+    onError: (error) => {
+      setErrors((prev) => ({
+        ...prev,
+        server: error.detail,
+      }));
     },
   });
   const { data } = useSuspenseQuery(getApiBoardsOptions());
   const currentBoardId = useCurrentBoardId();
-  const [validationErrors, setValidationErrors] = useState<ReturnType<
-    typeof makeZodErrorsUserFriendly<CreateKanbanTaskRequest>
-  > | null>(null);
+  const [errors, setErrors] = useState<{
+    client: ReturnType<
+      typeof makeZodErrorsUserFriendly<CreateKanbanTaskRequest>
+    > | null;
+    server: string | null | undefined;
+  }>({
+    client: null,
+    server: null,
+  });
   const [columns, setColumns] = useState<Column[]>([]);
 
   if (isPending) {
@@ -69,15 +90,8 @@ export function CreateTaskForm() {
     setColumns((prev) => [...prev, { id: crypto.randomUUID(), name: "" }]);
   };
 
-  const handleDeleteColumn = (columnId: string, index: number) => {
+  const handleDeleteColumn = (columnId: string) => {
     setColumns((prev) => prev.filter(({ id }) => id != columnId));
-    setValidationErrors((prev) => {
-      const copy = prev;
-
-      copy?.subtasks.splice(index, 1);
-
-      return copy;
-    });
   };
 
   const handleChangeColumnName = (
@@ -129,7 +143,10 @@ export function CreateTaskForm() {
     if (!validatedResult.success) {
       const formattedErrors = makeZodErrorsUserFriendly(validatedResult.error);
 
-      console.log("Form errors", formattedErrors);
+      setErrors((prev) => ({
+        ...prev,
+        client: formattedErrors,
+      }));
     } else {
       mutate({
         body: validatedResult.data,
@@ -138,13 +155,22 @@ export function CreateTaskForm() {
   };
 
   return (
-    <Form onSubmit={handleSubmit}>
+    <Form
+      onSubmit={handleSubmit}
+      onClearServerErrors={() => {
+        setErrors(() => ({
+          client: null,
+          server: null,
+        }));
+      }}
+    >
       <FormField name="task-name">
         <FormLabel>Title</FormLabel>
         <FormControl required placeholder="e.g. Take coffee break" />
         <FormMessage match="valueMissing">
           Please enter a valid task title
         </FormMessage>
+        {errors.client && <FormMessage>{errors.client.title}</FormMessage>}
       </FormField>
       <FormField name="description">
         <FormLabel>Description</FormLabel>
@@ -157,9 +183,12 @@ export function CreateTaskForm() {
         <FormMessage match="valueMissing">
           Please enter a description
         </FormMessage>
+        {errors.client && (
+          <FormMessage>{errors.client.description}</FormMessage>
+        )}
       </FormField>
       <Label>Subtasks</Label>
-      {columns.map(({ id, name }, index) => (
+      {columns.map(({ id, name }) => (
         <div key={id}>
           <FormField variant="group" name="subtask-column">
             <FormControl
@@ -175,7 +204,7 @@ export function CreateTaskForm() {
               size="icon"
               type="button"
               onClick={() => {
-                handleDeleteColumn(id, index);
+                handleDeleteColumn(id);
               }}
             >
               <Cross />
@@ -189,7 +218,10 @@ export function CreateTaskForm() {
       <Button variant="link" size="sm" type="button" onClick={handleAddColumn}>
         +Add New Column
       </Button>
-      <FormField name="status">
+      <FormField
+        name="status"
+        serverInvalid={typeof errors.server === "string"}
+      >
         <FormLabel>Status</FormLabel>
         <FormControl asChild>
           <Select
@@ -208,13 +240,14 @@ export function CreateTaskForm() {
               <CreateBoardColumnDialog
                 trigger={
                   <Button variant="select" size="select">
-                    "+ Add New Column"
+                    + Add New Column
                   </Button>
                 }
               />
             </SelectContent>
           </Select>
         </FormControl>
+        {errors.server && <FormMessage>{errors.server}</FormMessage>}
       </FormField>
       <FormSubmit asChild>
         <Button variant="default" size="sm" type="submit">

@@ -204,7 +204,7 @@ export function KanbanTaskDialog({ task, isDragging }: KanbantaskDialogProps) {
                   <CreateBoardColumnDialog
                     trigger={
                       <Button variant="select" size="select">
-                        "+ Add New Column"
+                        + Add New Column
                       </Button>
                     }
                   />

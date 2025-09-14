@@ -1,5 +1,5 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import type { FormEvent, ReactNode } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 import { Button } from "#frontend/components/primitives/button";
 import {
   Dialog,
@@ -33,6 +33,16 @@ export function CreateBoardColumnDialog({
   trigger = <Button>+New Column</Button>,
 }: CreateBoardColumnDialogProps) {
   const currentBoardId = useCurrentBoardId();
+  const [isOpen, setIsOpen] = useState(false);
+  const [errors, setErrors] = useState<{
+    client: {
+      [key: string]: string[];
+    };
+    server: string | null | undefined;
+  }>({
+    client: {},
+    server: null,
+  });
   const queryClient = useQueryClient();
   const { isPending, mutate } = useMutation({
     ...postApiBoardcolumnsMutation(),
@@ -40,6 +50,13 @@ export function CreateBoardColumnDialog({
       await queryClient.invalidateQueries({
         queryKey: getApiBoardsOptions().queryKey,
       });
+      setIsOpen(false);
+    },
+    onError: (error) => {
+      setErrors((prev) => ({
+        ...prev,
+        server: error.detail,
+      }));
     },
   });
 
@@ -59,9 +76,12 @@ export function CreateBoardColumnDialog({
 
     if (!validatedResult.success) {
       const formattedErrors = makeZodErrorsUserFriendly(validatedResult.error);
-      console.log("Form errors in create board column:", formattedErrors);
+      // console.log("Form errors in create board column:", formattedErrors);
 
-      // setValidationErrors(formattedErrors);
+      setErrors((prev) => ({
+        ...prev,
+        client: formattedErrors,
+      }));
     } else {
       mutate({
         body: validatedResult.data,
@@ -69,24 +89,34 @@ export function CreateBoardColumnDialog({
     }
   };
 
-  if (isPending) {
-    return <p>Sending request...</p>;
-  }
-
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent aria-describedby={undefined} showCloseButton={false}>
         <DialogTitle>Add New Column</DialogTitle>
-        <Form onSubmit={handleSubmit}>
-          <FormField name="column-name">
+        <Form
+          onSubmit={handleSubmit}
+          onClearServerErrors={() => {
+            setErrors({
+              client: {},
+              server: null,
+            });
+          }}
+        >
+          <FormField
+            name="column-name"
+            serverInvalid={typeof errors.server === "string"}
+          >
             <FormControl placeholder="e.g. To Do" required />
             <FormMessage match="valueMissing">
               Please enter a board column name
             </FormMessage>
+            {errors.server && <FormMessage>{errors.server}</FormMessage>}
           </FormField>
           <FormSubmit asChild>
-            <Button>Create New Column</Button>
+            <Button type="submit" disabled={isPending}>
+              {isPending ? "Creating..." : "Create New Column"}
+            </Button>
           </FormSubmit>
         </Form>
         <DialogClose asChild>

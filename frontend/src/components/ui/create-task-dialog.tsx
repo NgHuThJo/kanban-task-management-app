@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Button } from "#frontend/components/primitives/button";
 import {
   Dialog,
@@ -15,6 +16,16 @@ type CreateTaskDialogProps = {
 };
 
 export function CreateKanbanTaskDialog({ isMobile }: CreateTaskDialogProps) {
+  const [isOpen, setIsOpen] = useState(false);
+
+  const changeDialogOpenState = (isOpen: boolean) => {
+    setIsOpen(isOpen);
+  };
+
+  const dialogStateObject = {
+    isOpen,
+    changeDialogOpenState,
+  };
   return (
     <Dialog>
       <DialogTrigger asChild>
@@ -28,7 +39,7 @@ export function CreateKanbanTaskDialog({ isMobile }: CreateTaskDialogProps) {
       </DialogTrigger>
       <DialogContent aria-describedby={undefined} showCloseButton={false}>
         <DialogTitle>Add New Task</DialogTitle>
-        <CreateTaskForm />
+        <CreateTaskForm dialogState={dialogStateObject} />
         <DialogClose asChild>
           <Button type="button">
             <Cross />

@@ -113,9 +113,8 @@ public class CreateKanbanTaskHandler(AppDbContext context)
     )
     {
         var boardColumn =
-            await _context.BoardColumns.FirstOrDefaultAsync(b =>
-                b.Id == command.BoardColumnId
-            ) ?? throw new KeyNotFoundException("Board column not found");
+            await _context.BoardColumns.FindAsync(command.BoardColumnId)
+            ?? throw new KeyNotFoundException("Board column not found");
 
         var kanbanTask = new KanbanTask
         {
